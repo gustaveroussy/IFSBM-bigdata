@@ -15,7 +15,7 @@ fi
 
 # set up ~/.profile so that Rstudio loads the R interpreter from conda
 echo "export PATH=${HOME}/miniconda3/bin:${HOME}/miniconda3/condabin:$PATH" > ~/.profile
-# echo "export RSTUDIO_WHICH_R=${HOME}/miniconda3/envs/r_tp1/bin/R" >V ~/.profile
-# echo "export RSTUDIO_DISABLE_PACKAGE_INSTALL_PROMPT=1" >> ~/.profile
-# echo "export R_LIBS_USER=${HOME}/miniconda3/envs/r_tp1/lib/R/library" >> ~/.profile
-# echo "export R_LIBS_SITE=${HOME}/miniconda3/envs/r_tp1/lib/R/library" >> ~/.profile
+echo "export RSTUDIO_WHICH_R=${HOME}/miniconda3/envs/r_tp1/bin/R" >> ~/.profile
+echo "export RSTUDIO_DISABLE_PACKAGE_INSTALL_PROMPT=1" >> ~/.profile
+echo "export R_LIBS_USER=${HOME}/miniconda3/envs/r_tp1/lib/R/library" >> ~/.profile
+echo "export R_LIBS_SITE=${HOME}/miniconda3/envs/r_tp1/lib/R/library" >> ~/.profile

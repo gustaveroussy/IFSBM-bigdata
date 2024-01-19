@@ -6,6 +6,7 @@ channels:
   - defaults
   - r
 dependencies:
+  - gxx_linux-64==11.1.0
   - r-base
   - bioconductor-cbioportaldata
   - r-cbioportalr

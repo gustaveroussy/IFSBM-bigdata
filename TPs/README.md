@@ -22,13 +22,15 @@ première fois les TP 1 et 2 tels qu'ils vous sont fournis.
 
 ## Option 1: Installation sur le cloud
 
-La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier. Si
+1. La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier. Si
 vous n'avez pas de compte vous pouvez vous connecter via votre adresse gmail ou votre compte github (recommandé) ou vous
 pouvez créer un compte en cliquant sur "Don't have an account? Sign Up".
 
-Une fois connecté, le projet se déploie sur votre compte et vous ouvre une session RStudio placée dans une copie de ce
+2. Une fois connecté, le projet se déploie sur votre compte et vous ouvre une session RStudio placée dans une copie de ce
 répertoire github. Sur la barre des menus en haut, cliquez sur "Save a Permanent Copy" pour avoir votre copie du projet.
 Ainsi, toute modification que vous ferez par la suite n'affectera que votre session et sera sauvegardée.
+
+3. Set resources to 4GB
 
 ### 1.1 Installation de conda
 
@@ -74,8 +76,8 @@ install.packages("stringi")
 
 ### 1.4 Tests installations
 
-Dans l'arborescence en bas à droite, naviguez jusqu'à `TP_IFSBM_module12 > R_TP1 > src` pour le TP 1 ou
-`TP_IFSBM_module12 > R_TP2 > src` pour le TP 2, et double-cliquez sur le fichier `.Rmd` pour l'ouvrir. Cliquez ensuite
+Dans l'arborescence en bas à droite, naviguez jusqu'à `TPs > R_TP1 > src` pour le TP 1 ou
+`TPs > R_TP2 > src` pour le TP 2, et double-cliquez sur le fichier `.Rmd` pour l'ouvrir. Cliquez ensuite
 sur le bouton "Knit" pour knit le document en entier une première fois. La première fois, RStudio vous demande d'installer 2 dépendances supplémentaires:
 cliquez sur "Ok". Après quelques instants d'exécution, le document rendu apparait au format html dans une nouvelle
 fenêtre. Si vous avez un popup blocker, une fenêtre intitulée "Popup blocked" apparait d'abord. Cliquez alors sur "Try

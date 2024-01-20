@@ -2,7 +2,12 @@
 
 ## Galaxy TPs
 
-A COMPLETER.
+Pour suivre le TP "Galaxy", vous aurez besoin d'un navigateur web et d'un compte sur un serveur Galaxy public. 
+- Creez-vous un compte sur http://usegalaxy.eu
+
+Vous aurez également besoin de l'outil IGV qui permet de visualiser des données NGS alignées sur un génome. Cet outil peut être installé localement sur votre ordinateur (tous systèmes) ou utilisé en ligne. La version installée localement est plus réactive et agréable à utiliser.
+- IGV: http://software.broadinstitute.org/software/igv/download
+
 
 ## R TPs
 

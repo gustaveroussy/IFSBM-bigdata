@@ -1,6 +1,6 @@
 # IFSBM-bigdata
 
-**Dates 2023-24** 22-24 janvier 2023.
+**Dates ** 22-24 janvier 2024.
 
 **Lieu** Bat B2M, Gustave Roussy
 

@@ -873,10 +873,10 @@ should work.
 
 ```{r load keras library}
 library(keras)
-use_condaenv(condaenv="r_tp1")
+use_condaenv(condaenv="tensorflow")
 ```
 
-You can check with the command `conda info --envs` run from a command line interface that an environment named `r_tp1`
+You can check with the command `conda info --envs` run from a command line interface that an environment named `tensorflow`
 exists. If not, read the instructions from the README. After running this cell, restart your R studio. Check that your
 installation is correct by verifying that the next chunk does not return an error.
 

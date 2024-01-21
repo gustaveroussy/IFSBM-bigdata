@@ -1,6 +1,6 @@
 # IFSBM-bigdata
 
-**Dates ** 22-24 janvier 2024.
+**Dates** 22-24 janvier 2024.
 
 **Lieu** Bat B2M, Gustave Roussy
 
@@ -34,7 +34,7 @@ Les données de séquençage nouvelle génération (*next-generation sequencing*
 pratiques de recherche médicale et de soin, en produisant des portraits moléculaires d'une précision inégalée. Dans
 cette UE, nous décrirons quelques unes des données produites par les technologies *NGS* et comment ces données peuvent
 être utilisées pour décrire précisément le profil de la tumeur d'un individu et guider la prise en charge médicale.
-Vous apprendrez les bases d'une poignée de méthodes d'apprentissage automatique ()*machine learning* et verrez des
+Vous apprendrez les bases d'une poignée de méthodes d'apprentissage automatique (*machine learning*) et verrez des
 applications de ces méthodes sur des données publiques.
 
 

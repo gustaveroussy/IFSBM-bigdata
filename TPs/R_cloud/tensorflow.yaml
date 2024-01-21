@@ -1,0 +1,17 @@
+name: tensorflow
+channels:
+  - anaconda
+  - bioconda
+  - conda-forge
+  - defaults
+  - r
+dependencies:
+  - pip
+  - python=3.10
+  - pandas
+  - scipy
+  - requests
+  - h5py
+  - pip:
+    - keras
+    - tensorflow-cpu

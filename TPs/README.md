@@ -20,14 +20,14 @@ facilement reproductible. Ce n'est pas la seule solution, `renv` est aussi prati
 que `conda` est bien plus général.
 
 Pour les TP 1 et 2, vous pouvez soit faire le TP en utilisant une session [posit cloud](https://posit.cloud) dont le
-lien vous sera communiqué le jour J (Option 1), soit suivre depuis votre ordinateur (Option 2).
+lien vous sera communiqué le jour J (Option 1 et recommandée), soit suivre depuis votre ordinateur (Option 2).
 
 Il est recommandé de faire le TP depuis la session cloud qui vous est proposée dont l'environnement a été préalablement
 testé. Si toutefois vous souhaitez suivre sans utiliser le cloud, assurez-vous d'avoir exécuté au préalable toutes les
 instructions d'installations détaillées ci-dessous. Vous pouvez tester votre installation en exécutant en entier une
 première fois les TP 1 et 2 tels qu'ils vous sont fournis.
 
-## Option 1: Installation sur le cloud
+## Option 1: Installation sur le cloud (recommandée)
 
 1. La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier. Si
 vous n'avez pas de compte vous pouvez vous connecter via votre adresse gmail ou votre compte github (recommandé) ou vous
@@ -67,7 +67,7 @@ apparait d'abord. Cliquez alors sur "Try Again" et la Rmarkdown rendu apparait.
 
 Vous avez réussi, bravo!
 
-## Option 2: Installation en local
+## Option 2: Installation en local (bonnes connaissances requises)
 
 ATTENTION: l'installation en local nécessite de bonnes connaissances en utilisation d'un terminal de commande et de
 commandes de base telles que `git`, `cd`, `conda`. Si vous êtes déjà perdu, choisissez l'option "cloud".

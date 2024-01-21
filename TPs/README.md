@@ -3,10 +3,12 @@
 ## Galaxy TPs
 
 Pour suivre le TP "Galaxy", vous aurez besoin d'un navigateur web et d'un compte sur un serveur Galaxy public. 
-- Creez-vous un compte sur http://usegalaxy.eu
+- Creez-vous un compte sur <http://usegalaxy.eu>
 
-Vous aurez également besoin de l'outil IGV qui permet de visualiser des données NGS alignées sur un génome. Cet outil peut être installé localement sur votre ordinateur (tous systèmes) ou utilisé en ligne. La version installée localement est plus réactive et agréable à utiliser.
-- IGV: http://software.broadinstitute.org/software/igv/download
+Vous aurez également besoin de l'outil IGV qui permet de visualiser des données NGS alignées sur un génome. Cet outil
+peut être installé localement sur votre ordinateur (tous systèmes) ou utilisé en ligne. La version installée localement
+est plus réactive et agréable à utiliser.
+- IGV: <http://software.broadinstitute.org/software/igv/download>
 
 
 ## R TPs
@@ -35,58 +37,33 @@ pouvez créer un compte en cliquant sur "Don't have an account? Sign Up".
 répertoire github. Sur la barre des menus en haut, cliquez sur "Save a Permanent Copy" pour avoir votre copie du projet.
 Ainsi, toute modification que vous ferez par la suite n'affectera que votre session et sera sauvegardée.
 
-3. Set resources to 4GB
+### 1.1 Installation de conda et des dépendences
 
-### 1.1 Installation de conda
-
-Depuis RStudio, cliquez sur l'onglet `Terminal` puis executez la commande
+Depuis RStudio, cliquez sur l'onglet `Terminal` puis executez les commandes
 
 ```
+Rscript TPs/R_cloud/packages_install.R
 bash TPs/R_cloud/conda_setup.sh
+bash TPs/R_cloud/tensorflow_setup.sh
 ```
 
-### 1.2 Installation des environnements IFSBM TP 1 et IFSBM TP 2
+*Remarque*: le script `conda_setup.sh` install miniconda3 tandis que `tensorflow_setup.sh` créé un un environnement
+conda dans le lequel python et tensorflow sont installés. Cet environnement sera ensuite chargé au cours des TPs.
 
-Depuis l'onglet `Terminal` exécutez.
-
-1. Pour le TP 1
-
-    ```
-    bash TPs/R_cloud/r_tp1_setup.sh
-    ```
-
-2. Pour le TP 2
-
-    ```
-    bash TPs/R_cloud/r_tp2_setup.sh
-    ```
-
-Une fois l'exécution terminée, relancez votre projet en cliquant sur "Relaunch Project" dans le menu déroulant situé
-immédiatement à gauche de votre nom sur la barre du haut.
-
-*Remarque*: la première fois que vous exécutez ces scripts, un environnement conda `r_tp1` ou `r_tp2` sera créé
-pour vous. Les fois suivantes, le scripts ne fera que configurer le fichier `~/.profile` afin d'indiquer à RStudio
-d'utiliser l'interpréteur `R` de `r_tp1` ou `r_tp2`. Pour passer d'un TP à un autre vous devrez donc exécuter
-d'abord ce script puis relancez RStudio en cliquant sur "Relaunch Project".
-
-### 1.3 Lancement RStudio
+### 1.2 Lancement RStudio
 
 Vous êtes normalement déjà placé dans une session RStudio après avoir relancé votre projet. Pour parez à des erreurs de
 dépendances systèmes, re-installez manuallement la libraire  `stringi` en exécutant la commande suivante depuis la
 `Console`.
 
-```
-install.packages("stringi")
-```
-
-### 1.4 Tests installations
+### 1.3 Tests installations
 
 Dans l'arborescence en bas à droite, naviguez jusqu'à `TPs > R_TP1 > src` pour le TP 1 ou
 `TPs > R_TP2 > src` pour le TP 2, et double-cliquez sur le fichier `.Rmd` pour l'ouvrir. Cliquez ensuite
-sur le bouton "Knit" pour knit le document en entier une première fois. La première fois, RStudio vous demande d'installer 2 dépendances supplémentaires:
-cliquez sur "Ok". Après quelques instants d'exécution, le document rendu apparait au format html dans une nouvelle
-fenêtre. Si vous avez un popup blocker, une fenêtre intitulée "Popup blocked" apparait d'abord. Cliquez alors sur "Try
-Again" et la Rmarkdown rendu apparait.
+sur le bouton "Knit" pour knit le document en entier une première fois. La première fois, RStudio vous demande
+d'installer une dépendence supplémentaire: cliquez sur "Ok". Après quelques instants d'exécution, le document rendu
+apparait au format html dans une nouvelle fenêtre. Si vous avez un popup blocker, une fenêtre intitulée "Popup blocked"
+apparait d'abord. Cliquez alors sur "Try Again" et la Rmarkdown rendu apparait.
 
 Vous avez réussi, bravo!
 
@@ -156,17 +133,19 @@ Pour configurer l'interpréteur `R` de RStudio, 3 solutions possibles:
     ```
 
     où vous devez remplacer `/path/to` par le chemin correspondant sur votre ordinateur. Redémarrez ensuite votre
-    Rstudio. Cette solution a été partiellement testée.
+    Rstudio. Cette solution a été partiellement testée. Des problèmes ont été rencontrés avec des versions récentes de
+    `Rstudio` (cf cet [issue sur github](https://github.com/rstudio/rstudio/issues/12508)). Une installation d'une
+    version de Rstudio datant d'avant 12/2022 peut-être nécessaire.
 
 
 ### 2.4 Tests installations
 
 Placez vous dans le dossier `TPs` en faisant `File > New Project >  Existing Directory > IFSBM-bigdata > TPs`.
-Ouvrez le fichier Rmarkdown de la séance à savoir `R_TP1/src/TP_MachineLearning.Rmd` ou `R_TP2/src/TP_NN.Rmd` et faites
+Ouvrez le fichier Rmarkdown de la séance à savoir `R_TP1/src/TP1.Rmd` ou `R_TP2/src/TP2.Rmd` et faites
 une première fois un knit du fichier (bouton `knit`) sur RStudio.
 
 ## Utilisation des notebooks R
 
 Les *R notebooks* sont des documents R Markdown (*.Rmd*) avec des parties textuelles et des parties de code R
 (appelées *chunks*) qui peuvent être exécutées de manière indépendente et interactive. Une introduction à leur
-utilisation est incluse dans le premier TP (cf `R_TP1/src/TP_MachineLearning.Rmd`).
+utilisation est incluse dans le premier TP (cf `R_TP1/src/TP1.Rmd`).

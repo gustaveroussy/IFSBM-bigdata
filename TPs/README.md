@@ -29,17 +29,12 @@ première fois les TP 1 et 2 tels qu'ils vous sont fournis.
 
 ## Option 1: Installation sur le cloud (recommandée)
 
-1. La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier. Si
-vous n'avez pas de compte vous pouvez vous connecter via votre adresse gmail ou votre compte github (recommandé) ou vous
-pouvez créer un compte en cliquant sur "Don't have an account? Sign Up".
-
-2. Une fois connecté, le projet se déploie sur votre compte et vous ouvre une session RStudio placée dans une copie de ce
-répertoire github. Sur la barre des menus en haut, cliquez sur "Save a Permanent Copy" pour avoir votre copie du projet.
-Ainsi, toute modification que vous ferez par la suite n'affectera que votre session et sera sauvegardée.
-
 ### 1.1 Découverte de R, Rstudio et du cloud.
 
-Une fois connecté, vous arrivez sur une page ressemblant à la capture d'écran ci-dessous 
+
+Pour les TPs, un lien vers un espace sur le cloud vous sera directement fourni. Pour faire les exercices `R_beginnner`
+vous devez d'abord vous créer un compte sur [posit](https://posit.cloud/). Cliquez sur "Sign Up" en haut à gauche et
+créez vous un compte. Une fois connecté, vous arrivez sur une page ressemblant à la capture d'écran ci-dessous 
 
 <img src="img/posit.png" align="middle" />
 
@@ -66,7 +61,19 @@ Vous pouvez ensuite remplir les "chunks" de code pour une à une et tester votre
 |Run all chunks above   | Ctrl+Alt+P   | Command+Option+P |
 |Run current chunk |	Ctrl+Alt+C |	Command+Option+C |
 
-### 1.2 Installation de conda et des dépendences
+### 1.2 Déploiement des TP
+
+1. La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier. Si
+vous n'avez pas de compte (vous devriez en avoir un si vous avez suivi les exercices `R_beginner`) vous pouvez vous
+connecter via votre adresse gmail ou votre compte github (recommandé) ou vous pouvez créer un compte en cliquant sur
+"Don't have an account? Sign Up".
+
+2. Une fois connecté, le projet se déploie sur votre compte et vous ouvre une session RStudio placée dans une copie de ce
+répertoire github. Sur la barre des menus en haut, cliquez sur "Save a Permanent Copy" pour avoir votre copie du projet.
+Ainsi, toute modification que vous ferez par la suite n'affectera que votre session et sera sauvegardée.
+
+
+### 1.3 Installation de conda et des dépendences
 
 Depuis RStudio, cliquez sur l'onglet `Terminal` puis executez les commandes
 
@@ -79,13 +86,13 @@ bash TPs/R_cloud/tensorflow_setup.sh
 *Remarque*: le script `conda_setup.sh` install miniconda3 tandis que `tensorflow_setup.sh` créé un un environnement
 conda dans le lequel python et tensorflow sont installés. Cet environnement sera ensuite chargé au cours des TPs.
 
-### 1.3 Lancement RStudio
+### 1.4 Lancement RStudio
 
 Vous êtes normalement déjà placé dans une session RStudio après avoir relancé votre projet. Pour parez à des erreurs de
 dépendances systèmes, re-installez manuallement la libraire  `stringi` en exécutant la commande suivante depuis la
 `Console`.
 
-### 1.4 Tests installations
+### 1.5 Tests installations
 
 Dans l'arborescence en bas à droite, naviguez jusqu'à `TPs > R_TP1 > src` pour le TP 1 ou
 `TPs > R_TP2 > src` pour le TP 2, et double-cliquez sur le fichier `.Rmd` pour l'ouvrir. Cliquez ensuite

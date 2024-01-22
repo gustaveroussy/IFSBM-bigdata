@@ -37,7 +37,36 @@ pouvez créer un compte en cliquant sur "Don't have an account? Sign Up".
 répertoire github. Sur la barre des menus en haut, cliquez sur "Save a Permanent Copy" pour avoir votre copie du projet.
 Ainsi, toute modification que vous ferez par la suite n'affectera que votre session et sera sauvegardée.
 
-### 1.1 Installation de conda et des dépendences
+### 1.1 Découverte de R, Rstudio et du cloud.
+
+Une fois connecté, vous arrivez sur une page ressemblant à la capture d'écran ci-dessous 
+
+<img src="img/posit.png" align="middle" />
+
+Cliquez ensuite sur "New Project" puis "New project from Git repository" et collez l'URL
+"https://github.com/gustaveroussy/IFSBM-bigdata". Depuis l'onglet Terminal, exécutez
+
+```
+Rscript TPs/R_beginner/packages_install.R
+```
+
+Ensuite, depuis l'aborescence à droite, naviguez vers TPs > R_beginner et double-cliquez sur le fichier
+`Rbeginner-exercices-1-3.Rmd`.  Cliquez ensuite sur le bouton "Knit" pour knit le document en entier une première fois.
+La première fois, RStudio vous demande d'installer une dépendence supplémentaire: cliquez sur "Ok". Après quelques
+instants d'exécution, le document rendu apparait au format html dans une nouvelle fenêtre. Si vous avez un popup
+blocker, une fenêtre intitulée "Popup blocked" apparait d'abord. Cliquez alors sur "Try Again" et la Rmarkdown rendu
+apparait.
+
+Vous pouvez ensuite remplir les "chunks" de code pour une à une et tester votre code en cliquant sur le bouton vert
+à droite de la "chunk" ou en utilisant un raccourci clavier. 
+
+| Tâche | Raccourci Windows  | Raccourci macOS |
+|---|---|---|
+|Run current chunk |	Ctrl+Shift+Enter |	Command+Shift+Enter |
+|Run all chunks above   | Ctrl+Alt+P   | Command+Option+P |
+|Run current chunk |	Ctrl+Alt+C |	Command+Option+C |
+
+### 1.2 Installation de conda et des dépendences
 
 Depuis RStudio, cliquez sur l'onglet `Terminal` puis executez les commandes
 
@@ -50,13 +79,13 @@ bash TPs/R_cloud/tensorflow_setup.sh
 *Remarque*: le script `conda_setup.sh` install miniconda3 tandis que `tensorflow_setup.sh` créé un un environnement
 conda dans le lequel python et tensorflow sont installés. Cet environnement sera ensuite chargé au cours des TPs.
 
-### 1.2 Lancement RStudio
+### 1.3 Lancement RStudio
 
 Vous êtes normalement déjà placé dans une session RStudio après avoir relancé votre projet. Pour parez à des erreurs de
 dépendances systèmes, re-installez manuallement la libraire  `stringi` en exécutant la commande suivante depuis la
 `Console`.
 
-### 1.3 Tests installations
+### 1.4 Tests installations
 
 Dans l'arborescence en bas à droite, naviguez jusqu'à `TPs > R_TP1 > src` pour le TP 1 ou
 `TPs > R_TP2 > src` pour le TP 2, et double-cliquez sur le fichier `.Rmd` pour l'ouvrir. Cliquez ensuite

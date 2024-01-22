@@ -1,0 +1,314 @@
+---
+title: "Exercises for R Beginners"
+author: "Gaëlle Lelandais, Université Paris-Sud"
+output:
+  pdf_document: default
+  md_document: null
+  variant: markdown_github
+  '': default
+---
+
+_Adapted by Daniel Gautheret_
+
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(include=TRUE)  # set to T/F for displaying solutions
+```
+
+# PART 1
+
+First taste of R. Setting variables, using R functions, producing R graphics. 
+
+## Exercise 1.1
+
+Create vector "vec1" containing integers from 1 to 12. Add values: 16, 17, 18 to end of vector. 
+
+**Required Functions:**  ":" ; c( )
+
+```{r eval=FALSE}
+vec1 = c(1:12)
+print (vec1)
+vec1 = c(vec1, 16,17,18)
+print (vec1)
+```
+
+## Exercise 1.2
+
+Create vector "vec2" containing values: 0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0. 
+Try to do it in different ways. 
+
+**Required Functions:** c( ); seq( )
+
+```{r eval=FALSE}
+vec2 = c(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5)
+vec2 = seq(0, 5, by = 0.5)
+print(vec2)
+```
+
+## Exercise 1.3
+
+Compute operation : 4850 / 26. Display result with 2 or 3 digit precision. Are there other R functions to control precision ?
+
+**Required Functions:** round( ); help( )
+
+```{r eval=FALSE}
+print(4850/26)
+
+# print with 2 or 3 digits precision
+print(round(4850/26, 2))
+print(round(4850/26, 3))
+
+# other possible functions: ceiling(); floor().
+print(ceiling(4850/26))
+print(floor(4850/26))
+```
+
+## Exercise 1.4
+
+Create vector « vec6 » containing names: « individual 1 », « individual 2 », ... , « individual
+100 ».
+**Required Functions:**  paste( )
+
+```{r eval=FALSE}
+vec6 = paste("individual", 1:100)
+print(vec6)
+```
+
+
+## Exercise 1.5
+Display today's date. Save result in variable "today". Create variable « m2 » such that m2 = "I shall remember the R script I wrote on". Combine variables "today" and m2 in order to display "I shall remember the R script I wrote on Mon Sep 10 11:50::10 2018"
+
+**Required Functions:**  : date( ) ; paste( ) 
+
+```{r eval=FALSE}
+print(date())
+
+today = date()
+m2 = "I shall remember the R script I wrote on"
+
+print(paste(m2, today))
+```
+
+## Exercise 1.6
+Plot 3 points at positions (x, y) : (1, 2), (2, 2) and (3, 3). Augment point size using argument "cex".  Change the shape of points using argument "pch". Set axis scales using arguments "xlim" and "ylim". Change point colors using argument "col". Write plot title using argument "main". Write axis labels using arguments "xlab" et "ylab". Save results as a PDF document.
+
+**Required Functions:** plot( ) ; jpeg( ) ; pdf(); dev.off( ) 
+
+```{r eval=FALSE}
+plot(c(1,2,3), c(2,2,3))
+plot(c(1,2,3), c(2,2,3), cex = 2)
+plot(c(1,2,3), c(2,2,3), cex = 2, pch = 20)
+plot(c(1,2,3), c(2,2,3), cex = 2, pch = 20, xlim = c(0,5), ylim = c(1,6))
+plot(c(1,2,3), c(2,2,3), cex = 2, pch = 20, xlim = c(0,5), ylim = c(1,6), col = c("red", "green", "blue"))
+plot(c(1,2,3), c(2,2,3), cex = 2, pch = 20, xlim = c(0,5), ylim = c(1,6), col = c("red", "green", "blue"), main = "MonGraphique", xlab = "Axe X", ylab = "Axe Y")
+
+pdf("MonGraphique.pdf")
+plot(c(1,2,3), c(2,2,3), cex = 2, pch = 20, xlim = c(0,5), ylim = c(1,6), col = c("red", "green", "blue"), main = "MonGraphique", xlab = "Axe X", ylab = "Axe Y")
+dev.off()
+
+```
+
+## Exercise 1.7
+Draw 100 random numbers following a normal distribution of mean 10 and standard deviation 5. Plot a histogram of the numbers. Change the number of bars in the histogram: 5, 50 and 100.
+
+**Required Functions:**  rnorm( ) ; hist( ) 
+
+```{r eval=FALSE}
+hist(rnorm(100, mean = 10, sd = 5), nclass = 5)
+hist(rnorm(100, mean = 10, sd = 5), nclass = 50)
+hist(rnorm(100, mean = 10, sd = 5), nclass = 100)
+```
+
+## Exercise 1.8
+Draw 10 random numbers between 1 and 100. 
+
+**Required Functions:** sample()
+
+```{r eval=FALSE}
+sample(1:100, size = 10)
+```
+
+## Exercise 1.9
+
+Simulate 100 coin tosses. To do so, perform 100 draws with replacement in a set of 2 possible values ("head" and "tail")
+
+**Required Functions:**  sample()
+
+```{r eval=FALSE}
+sample(c("head", "tail"), size = 100, rep = TRUE)
+```
+
+## Exercise 1.10
+Perform the same simulation as in Exercise 9, but with a biased coin. Probability of "head" should be 0.3. 
+
+**Required Functions:**  sample()
+```{r eval=FALSE}
+  sample(c("head", "tail"), size = 100, rep = TRUE, prob = c(0.3, 0.7))
+```
+
+# PART 2
+
+Using tables and importing/exporting text data in R. 
+
+## Exercise 2.1
+Create a identity matrix (with ones on the main diagonal and zeros elsewhere) of dimension 10 lines x 10 columns.
+
+Create a matrix with random values of dimension 10 lines x 10 columns whose elements follow a normal distribution of mean 0 and variance 5. 
+
+**Required Functions:**  matrix( ) ; diag( ), rnorm( ) 
+
+```{r eval=FALSE}
+matId = matrix(0, ncol = 10, nrow = 10)
+diag(matId) = rep(1, 10)
+
+matRnd = matrix(rnorm(100, mean = 0, sd = sqrt(5)), ncol = 10, nrow = 10)
+```
+
+## Exercise 2.2
+Create 2 random vectors named "x1 and "x2" each containing 100 random values following 1) a _standard_ normal distribution (mean = 0, standard deviation = 1) and 2) a uniform distribution over interval [0 ; 10].
+
+Create a matrix "m1" containing the first 10 values x1 (column 1 of m1) and the last 10 values of x2 (column 2 of m1).
+
+Create a matrix "m2" containing the 16th, 51th, 79th, 31th and 27th values of x1 (column 1 of m2) and the 30th, 70th, 12th, 49th and 45th values of x2 (column 2 of m2).
+
+Concatenate matrices m1 and m2 into matriw m12. What are the dimensions (nb of lines and columns) of m12 ?
+
+**Required Functions:**  rnorm( ) ; runif( ) ; cbind( ) ; rbind( ) ; dim( ) ; etc. 
+
+```{r eval=FALSE}
+x1 = rnorm(100, 0, 1)
+x2 = runif(100, min = 0, max = 10)
+
+m1 = cbind(x1[1:10], x2[1:10])
+m2 = cbind(x1[c(16, 51, 79, 31, 27)], x2[c(30, 70, 12, 49, 45)])
+ 
+m12 = rbind(m1, m2)
+# dimensions of matrix 
+dim(m12)
+
+```
+
+## Exercise 2.4
+Import the file "EMT_count_EMT_count_data.txt". Display all lines with all counts>=10. How many are there? Create a table containing all lines with sum of counts >=10 and write this table to a file "EMT_filtered.txt". 
+
+**Required Functions:**  read.table() with arguments "header = TRUE" and "row.names = 1", rowSums, write.table() with argument "quote=FALSE"
+
+```{r eval=FALSE}
+
+mytable = read.table(file="mytable.txt", header=TRUE, row.names=1)
+mytable[rowSums(mytable)==0,]
+
+```
+
+# PART 3
+
+Repeating commands automatically (using tests and loops) and creating new functions. These exercises are a bit harder than in parts I & II. 
+
+## Exercise 3.1
+Create a loop displaying index "i" of current iteration (10 iterations). Compute the cumulative sum (sumCumul) of indices.
+
+```{r eval=FALSE}
+sumCumul = 0
+
+for(i in 1:10){
+    print(i)
+    sumCumul = sumCumul + i
+}
+
+print(sumCumul)
+
+```
+
+## Exercise 3.2
+Create vector "vecRnd" containing 100 random values from a normal distribution of mean 4 and standard deviation 5. Print indices of values higher than 3. Store these values in vector "vecGT3". Test whether the sum of these values ("valSum") is greater that 40, 30 and 20. Display an appropriate message.
+
+```{r eval=FALSE}
+vecRnd = rnorm(100, mean = 4, sd = 5)
+# indices des valeurs > 3
+print(which(vecRnd > 3))
+
+vecGT3 = vecRnd[which(vecRnd > 3)]
+valSum = sum(vecGT3)
+
+if(valSum > 40){
+    print("sum is > 40")
+}else if(valSum > 30){
+    print("sum is > 30")
+}else if(valSum > 20){
+    print("sum > 20")
+}else{
+    print("sum is < 20")
+}
+
+```
+
+## Exercise 3.3
+Create a function named "mysum" that computes the sum of 2 variables "x" and "y" passed as arguments. 
+
+```{r eval=FALSE}
+mysum = function(x, y){
+    return(x + y)
+}
+
+# test of function
+mysum(x = 18, y = 35)
+```
+
+## Exercise 3.4
+Write a function "computeFee" that takes an age as argument and displays : "children fee" if age is less than 12 years, "senior fee" if age is more than 60 years and "adult fee" othewise. Test your function for persons aged 5, 65, 85, 41, 23, 47 years.
+
+```{r eval=FALSE}
+computeFee = function(age){
+    if(age < 12){
+        print("children fee")
+    }else if(age > 60){
+        print("senior fee")
+    }else{
+        print("adult fee")
+    }
+# end of function
+}
+
+# tests of fonction
+for(i in c(5, 65, 85, 41, 23, 47)){
+    computeFee(age = i)
+}
+```
+
+## Exercise 3.5
+Generate three random RNA sequences of 50, 60 et 79 nucleotides. Create a function "countNuc( )" that determines how many times each nucleotide is present in the sequence et displays the most frequent nucleotide and its number of occurences. Use this function to determine the most frequent nucleotide in your three sequences. 
+
+```{r eval=FALSE}
+countNuc = function(sequence){
+    # list of letters to be enumerated
+    listeLet = c("A", "U", "C", "G")
+    
+    # identify most frequent letter
+    valMax = 0
+    letMax = NULL
+
+    for(i in listeLet){
+        nbreLet = sum(sequence == i)
+        if(nbreLet > valMax){
+            valMax = nbreLet
+            letMax = i
+        }else{
+        }
+    }
+
+    print(paste("Max letter", letMax, "- Nbre occurences", valMax))
+
+# enf of function
+}
+
+seq1 = sample(c("A", "U", "C", "G"), 50, replace = T)
+seq2 = sample(c("A", "U", "C", "G"), 60, replace = T)
+seq3 = sample(c("A", "U", "C", "G"), 79, replace = T)
+
+# tests de la fonction
+countNuc(seq1)
+countNuc(seq2)
+countNuc(seq3)
+
+```

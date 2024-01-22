@@ -1,0 +1,141 @@
+---
+title: "Exercices-suppl.corr.Rmd"
+output: html_document
+author: "Daniel Gautheret, Université Paris-Saclay"
+date: "2023-01-18"
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(include=TRUE)  # set to T/F for displaying solutions
+```
+
+
+# Playing with clinical dataframes 
+- Obtain clinical data from TCGABiolinks
+- Play with dataframe in base R and with dplyr
+
+
+```{r eval=FALSE}
+library(TCGAbiolinks)
+library(dplyr)
+```
+
+## Question 1
+Récupérez tous les projets disponibles sur TCGAbiolinks avec getGDCprojects().
+Les project_id TCGA poumon sont "TCGA-LUSC" et "TCGA-LUSC". Affichez les lignes correspondant à ces cancers de la table précédente. Quels sont les disease_type pour ces cancers? 
+
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+
+## Question 2
+Extraire les tables cliniques de"TCGA-LUSC" et "TCGA-LUSC"
+Peut-on fusionner ces tables avec rbind? 
+Fonctions utiles: GDCquery_clinic() , dim()
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+
+## Question 3
+On va selectionner cette liste de variables à extraire de la table (la liste est donnée)
+Puis fusionner les tables en une seule table nommée tcgaclin, en ne gardant que ces variables. 
+Quelles sont les dimensions finales du jeu de données  ? 
+Donner le type de chaque variable contenue dans la table "tcgaclin"
+fonctions utiles : dim(), nrow(), str()
+
+```{r include=TRUE}
+sel_var <- c("submitter_id","project","gender",
+             "race","days_to_death",
+             "tumor_grade","age_at_diagnosis",
+             "alcohol_history", "primary_diagnosis",
+             "years_smoked","year_of_diagnosis","vital_status",
+             "classification_of_tumor","cigarettes_per_day" ,"morphology")
+
+# Réponse ici
+
+```
+
+
+## question 4
+Listez tous les sous-types de cancer (primary_diagnosis) de tcgaclin, pour qu'ils  n'apparaissent une fois chacun. Combien y en a-t-il de chaque ?  
+Combien d'observations (individus) par type de cancer sont disponibles ? 
+Triez la liste par ordre d'effectif par type de cancer
+Fonctions utiles: length(), table(), unique(), sort()
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+
+## question 5
+Afficher combien de patients ont un age au diagnostic > 80 ans. (attention: l'age est en jours)
+Représenter l'histogramme de l'âge au diagnostic pour l'ensemble des patients
+Ajouter dans la table une colonne "age_arrondi" avec l'age en année arrondi.
+Fonctions utiles : table(), hist(), round()
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+## question 6
+Représenter graphiquement le lien entre la variable "age_arrondi" et la variable "project"
+fonctions: boxplot(variable ~ fact) où fact est le facteur de séparation à utiliser
+On peut utiliser l'option las=2 pour afficher les labels verticalement
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+## question 7
+Les patients LUAD sont-ils significativement plus jeunes que les patients LUSC? Réalisez un test statistique pour répondre.  
+Fonctions: t.test (x~y), wilcox.test (x~y)
+
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+## question 8
+Affichez la table des comptages de sexe par type de cancer (gender, project)
+Y a -t-il un biais homme/femme pour l'un des cancers ?
+Fonctions: table, chisq.test
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+# Utilisation de dplyr (package dplyr ou tidyr)
+
+## question 9
+Convertir la table clinique en tibble pour utilisation avec dplyr
+Fonction: as.tibble()
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+## question 10
+Delectionnez les patients de 75 ans ou plus. Combien y en a-t-il?
+A partir de cette selection, créez une nouvelle table avec seulement les colonnes suivantes:
+age_arrondi, gender, cigarettes_per_day, days_to_death
+Fonctions: %>% filter(), %>% nrow(), %>% select()
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+## question 11
+Calculez la survie moyenne des patients dans la sélection ci-dessus et dans l'ensemble de la cohorte.
+Fonctions: !is.na(),  unlist()
+
+```{r include=TRUE}
+# Réponse ici
+```
+
+
+

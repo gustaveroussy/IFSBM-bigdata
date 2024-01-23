@@ -63,14 +63,15 @@ Vous pouvez ensuite remplir les "chunks" de code pour une à une et tester votre
 
 ### 1.2 Déploiement des TP
 
-1. La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier. Si
-vous n'avez pas de compte (vous devriez en avoir un si vous avez suivi les exercices `R_beginner`) vous pouvez vous
-connecter via votre adresse gmail ou votre compte github (recommandé) ou vous pouvez créer un compte en cliquant sur
-"Don't have an account? Sign Up".
+1. La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier.
+   Si vous n'avez pas de compte (vous devriez en avoir un si vous avez suivi les exercices `R_beginner`) vous pouvez
+   vous connecter via votre adresse gmail ou votre compte github (recommandé) ou vous pouvez créer un compte en cliquant
+   sur "Don't have an account? Sign Up".
 
-2. Une fois connecté, le projet se déploie sur votre compte et vous ouvre une session RStudio placée dans une copie de ce
-répertoire github. Sur la barre des menus en haut, cliquez sur "Save a Permanent Copy" pour avoir votre copie du projet.
-Ainsi, toute modification que vous ferez par la suite n'affectera que votre session et sera sauvegardée.
+2. Une fois connecté, le projet se déploie sur votre compte et vous ouvre une session RStudio placée dans une copie de
+   ce répertoire github <https://github.com/gustaveroussy/IFSBM-bigdata> contenant la matériel pour les TPs . Sur la barre
+   des menus en haut, cliquez sur "Save a Permanent Copy" pour avoir votre copie du projet. Ainsi, toute modification
+   que vous ferez par la suite n'affectera que votre session et sera sauvegardée.
 
 
 ### 1.3 Installation de conda et des dépendences
@@ -84,15 +85,9 @@ bash TPs/R_cloud/tensorflow_setup.sh
 ```
 
 *Remarque*: le script `conda_setup.sh` install miniconda3 tandis que `tensorflow_setup.sh` créé un un environnement
-conda dans le lequel python et tensorflow sont installés. Cet environnement sera ensuite chargé au cours des TPs.
+conda dans lequel python et tensorflow sont installés. Cet environnement sera ensuite chargé au cours des TPs.
 
-### 1.4 Lancement RStudio
-
-Vous êtes normalement déjà placé dans une session RStudio après avoir relancé votre projet. Pour parez à des erreurs de
-dépendances systèmes, re-installez manuallement la libraire  `stringi` en exécutant la commande suivante depuis la
-`Console`.
-
-### 1.5 Tests installations
+### 1.4 Tests installations
 
 Dans l'arborescence en bas à droite, naviguez jusqu'à `TPs > R_TP1 > src` pour le TP 1 ou
 `TPs > R_TP2 > src` pour le TP 2, et double-cliquez sur le fichier `.Rmd` pour l'ouvrir. Cliquez ensuite

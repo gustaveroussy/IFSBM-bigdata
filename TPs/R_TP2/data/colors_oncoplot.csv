@@ -1,0 +1,14 @@
+Name;Color
+Silent;#DFC27D
+IGR;#DAD7CD
+RNA;#FFD60A
+Nonstop_Mutation;#F26A4F
+In_Frame_Del;#80B1D3
+Frame_Shift_Del;#EDD83D
+In_Frame_Ins;#FFD3BA
+Frame_Shift_Ins;#724E91
+Multi_Hit;#B3DE6A
+Missense_Mutation;#8CD3C7
+Nonsense_Mutation;#FCCDE5
+Translation_Start_Site;#6C757D
+Splice_Region;#DDA15E

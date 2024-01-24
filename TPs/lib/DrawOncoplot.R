@@ -3,6 +3,14 @@ library(dplyr)
 library(maftools)
 library(tidyr)
 
+# Get colors for titv plot
+get_titvCol <- function(alpha = 1){
+  col = c("#F44336", "#3F51B5", "#2196F3", "#4CAF50", "#FFC107", "#FF9800")
+  col = grDevices::adjustcolor(col = col, alpha.f = alpha)
+  names(col) = c('C>T', 'C>G', 'C>A', 'T>A', 'T>C', 'T>G')
+  col
+}
+
 # Copied from source code of maftools
 # Layout for oncoplot
 plot_layout <- function(clinicalFeatures = NULL, drawRowBar = TRUE, drawColBar = TRUE, draw_titv = FALSE,

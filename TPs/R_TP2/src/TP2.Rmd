@@ -166,7 +166,7 @@ print(names(TcgaData))
 The next chunk renders the first lines of the extended mutations table.
 
 <div style = "width:100%; height:auto; margin: auto;">
-```{r show design prism, echo=F}
+```{r show design prism, echo=F, eval=eval_chunks}
 RenderTable(TcgaData$MUT, caption="Mutations TCGA LIHC", nrows=10)
 ```
 </div>
@@ -511,13 +511,9 @@ library(glmnet)
 
 The next chunk processes the `OS_STATUS` variable of the `TcgaData$CLINIC` table to make it usable in survival models.
 
-```{r load data survival}
+```{r load data survival, eval=eval_chunks}
 CgcTable <- read.csv("../data/CancerGeneCensusCOSMIC_20240117.csv")
 CgcGenes <- CgcTable$Gene.Symbol
-
-TcgaData <- LoadcBioportal(Genes = CgcGenes, Organ = "lihc_tcga_pan_can_atlas_2018", 
-                           ClinicNeeded = T, MutNeeded = T, MutExtNeeded = T, 
-                           RNANeeded = T, NormalizeRNA = T, Tests = F)
 
 TcgaData$CLINIC[TcgaData$CLINIC$OS_STATUS=="0:LIVING", "Vital_Status"] <- "Alive"
 TcgaData$CLINIC[TcgaData$CLINIC$OS_STATUS=="1:DECEASED", "Vital_Status"] <- "Deceased"
@@ -530,7 +526,7 @@ Unfortunatly, there are some NAs in the data, in particular survival data. In th
 discarding them. This is acceptable because there is a low number of such cases. It would not be suitable otherwise. We
 will also discard patients with survival time of 0.
 
-```{r remove bad survival data}
+```{r remove bad survival data, eval=eval_chunks}
 patientsWithNAs <- rowSums(is.na(TcgaData$CLINIC[,c("OS_MONTHS", "OS_STATUS")])) > 0
 TcgaData$CLINIC <- TcgaData$CLINIC[!patientsWithNAs,]
 TcgaData$EXP <- TcgaData$EXP[!patientsWithNAs,]
@@ -556,7 +552,7 @@ $P_{l} = P_{l-1} \cdot \left( \frac{ NatRisk_{l}- Ndeath_{l} }{ NatRisk_{l}} \ri
 The cumulative probability of survival allow you to plot the Kaplan-Meier curve, which is a standard way to visualize
 the distribution of the survival data accross the cohort.
 
-```{r plot survival data, fig.height=6, fig.width=6, fig.align="center"}
+```{r plot survival data, fig.height=6, fig.width=6, fig.align="center", eval=eval_chunks}
 plot(survfit(Surv(time = TcgaData$CLINIC$OS_MONTHS, event=TcgaData$CLINIC$OS_STATUS) ~ NULL),
      mark.time = T, 
      main="Kaplan Meier curve", 
@@ -616,7 +612,7 @@ the glmnet function should be a `Surv` object as in the chunk of the first Kapla
 may be obtained directly from `TcgaData$MUT` after conversion of the aminoacid changes to 1/0 status or may be obtained
 by processing `TcgaData$MUTEXT`. 
 
-```{r cox model}
+```{r cox model, eval=eval_chunks}
 # select survival variables
 SurvivalData <- TcgaData$CLINIC  %>% select(OS_STATUS, OS_MONTHS)
 
@@ -647,7 +643,7 @@ print(paste("Training size:", length(trainIndex)))
 print(paste("Test size:", length(testIndex)))
 ```
 
-```{r fit glmnet cox cv}
+```{r fit glmnet cox cv, eval=eval_chunks}
 fitCoxCv <- cv.glmnet(
   x=#YOUR WORK HERE. Don't forget to cast as.matrix,
   y=#YOUR WORK HERE,
@@ -660,7 +656,7 @@ plot(fitCoxCv)
 print(paste("You best value of lambda is :", fitCoxCv$lambda.min))
 ```
 
-```{r coef glmnet cox best, fig.cap="Top Cox model coefficients", fig.height=6, fig.width=6, fig.align="center"}
+```{r coef glmnet cox best, fig.cap="Top Cox model coefficients", fig.height=6, fig.width=6, fig.align="center", eval=eval_chunks}
 fitCoxReduced <-glmnet(
   x=# YOUR WORK HERE,
   y=# YOUR WORK HERE,

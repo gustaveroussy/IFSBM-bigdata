@@ -10,5 +10,5 @@ source activate ${HOME}/miniconda3
 if [[ -d "${HOME}/miniconda3/envs/tensorflow" ]]; then
   printf "INFO: conda environment 'tensorflow' already exists, delete it if you want to recreate it. You may delete the environment by running conda env remove --name 'tensorflow' --all\n"
 else
-  mamba env create -f TPs/R_cloud/tensorflow.yaml
+  mamba env create -f TPs/envs_cloud/tensorflow.yaml
 fi

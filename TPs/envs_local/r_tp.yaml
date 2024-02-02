@@ -1,0 +1,39 @@
+name: r_tp
+channels:
+  - apple
+  - anaconda
+  - bioconda
+  - conda-forge
+  - defaults
+  - r
+dependencies:
+  - r-base=4.2
+  - bioconductor-bsgenome
+  - bioconductor-bsgenome.hsapiens.ucsc.hg19
+  - r-data.table
+  - r-dbplyr=2.3.4
+  - r-dt
+  - r-dplyr
+  - r-glmnet
+  - r-htmltools
+  - r-htmlwidgets
+  - r-keras
+  - r-maditr
+  - bioconductor-maftools
+  - bioconductor-mutationalpatterns
+  - r-rcolorbrewer
+  - r-reshape2
+  - r-rmarkdown
+  - r-survival
+  - r-tibble
+  - r-tidyr
+  - r-yarrr
+  - pip
+  - python=3.10
+  - pandas
+  - scipy
+  - requests
+  - h5py
+  - pip:
+    - keras
+    - tensorflow-cpu

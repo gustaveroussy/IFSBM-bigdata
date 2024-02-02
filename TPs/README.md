@@ -2,8 +2,8 @@
 
 ## Galaxy TPs
 
-Pour suivre le TP "Galaxy", vous aurez besoin d'un navigateur web et d'un compte sur un serveur Galaxy public. 
-- Creez-vous un compte sur <http://usegalaxy.eu>
+Pour suivre le TP "Galaxy", vous aurez besoin d'un navigateur web et d'un compte sur un serveur Galaxy public.
+- Créez-vous un compte sur <http://usegalaxy.eu>
 
 Vous aurez également besoin de l'outil IGV qui permet de visualiser des données NGS alignées sur un génome. Cet outil
 peut être installé localement sur votre ordinateur (tous systèmes) ou utilisé en ligne. La version installée localement
@@ -19,22 +19,21 @@ allons construire un environnement dédié au projet via la gestionnaire d'envir
 facilement reproductible. Ce n'est pas la seule solution, `renv` est aussi pratique mais est limité au langage R alors
 que `conda` est bien plus général.
 
-Pour les TP 1 et 2, vous pouvez soit faire le TP en utilisant une session [posit cloud](https://posit.cloud) dont le
+Pour les TPs 1 et 2, vous pouvez soit faire le TP en utilisant une session [posit cloud](https://posit.cloud) dont le
 lien vous sera communiqué le jour J (Option 1 et recommandée), soit suivre depuis votre ordinateur (Option 2).
 
 Il est recommandé de faire le TP depuis la session cloud qui vous est proposée dont l'environnement a été préalablement
 testé. Si toutefois vous souhaitez suivre sans utiliser le cloud, assurez-vous d'avoir exécuté au préalable toutes les
 instructions d'installations détaillées ci-dessous. Vous pouvez tester votre installation en exécutant en entier une
-première fois les TP 1 et 2 tels qu'ils vous sont fournis.
+première fois les TPs 1 et 2 tels qu'ils vous sont fournis.
 
 ## Option 1: Installation sur le cloud (recommandée)
 
 ### 1.1 Découverte de R, Rstudio et du cloud.
 
-
 Pour les TPs, un lien vers un espace sur le cloud vous sera directement fourni. Pour faire les exercices `R_beginner`
 vous devez d'abord vous créer un compte sur [posit](https://posit.cloud/). Cliquez sur "Sign Up" en haut à gauche et
-créez vous un compte. Une fois connecté, vous arrivez sur une page ressemblant à la capture d'écran ci-dessous 
+créez vous un compte. Une fois connecté, vous arrivez sur une page ressemblant à la capture d'écran ci-dessous
 
 <img src="img/posit.png" align="middle" />
 
@@ -53,7 +52,7 @@ blocker, une fenêtre intitulée "Popup blocked" apparait d'abord. Cliquez alors
 apparait.
 
 Vous pouvez ensuite remplir les "chunks" de code pour une à une et tester votre code en cliquant sur le bouton vert
-à droite de la "chunk" ou en utilisant un raccourci clavier. 
+à droite de la "chunk" ou en utilisant un raccourci clavier.
 
 | Tâche | Raccourci Windows  | Raccourci macOS |
 |---|---|---|
@@ -61,7 +60,7 @@ Vous pouvez ensuite remplir les "chunks" de code pour une à une et tester votre
 |Run all chunks above   | Ctrl+Alt+P   | Command+Option+P |
 |Run current chunk |	Ctrl+Alt+C |	Command+Option+C |
 
-### 1.2 Déploiement des TP
+### 1.2 Déploiement des TPs
 
 1. La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier.
    Si vous n'avez pas de compte (vous devriez en avoir un si vous avez suivi les exercices `R_beginner`) vous pouvez
@@ -79,9 +78,9 @@ Vous pouvez ensuite remplir les "chunks" de code pour une à une et tester votre
 Depuis RStudio, cliquez sur l'onglet `Terminal` puis executez les commandes
 
 ```
-Rscript TPs/R_cloud/packages_install.R
-bash TPs/R_cloud/conda_setup.sh
-bash TPs/R_cloud/tensorflow_setup.sh
+Rscript TPs/envs_cloud/packages_install.R
+bash TPs/envs_cloud/conda_setup.sh
+bash TPs/envs_cloud/tensorflow_setup.sh
 ```
 
 *Remarque*: le script `conda_setup.sh` install miniconda3 tandis que `tensorflow_setup.sh` créé un un environnement
@@ -121,29 +120,37 @@ qui est une version plus minimaliste (prends moins d'espace) de `conda`.
 Ouvrez un terminal et vérifier que la commande `conda` est bien disponible en faisant `which conda` (Mac, Linux) ou
 `where.exe conda` (Windows powershell).
 
-### 2.2 Installation des environnements R TP 1 et R TP 2
+### 2.2 Installation de  l'environnement r_tp
 
-Pour installer les environnements nécessaires aux 2 TP, exécutez les commandes
+Pour installer les environnements nécessaires aux 2 TP,
 
-```
-conda env create -f TPs/R_TP1/r_tp1.yaml
-conda env create -f TPs/R_TP2/r_tp2.yaml
-```
+1. si vous êtes sur une architecture autre que macOS arm 64 (apple silicon chips), exécutez les commandes
+    ```
+    conda env create -f TPs/envs_local/r_tp.yaml
+    conda activate r_tp
+    bash TPs/envs_local/r_tp.sh
+    ```
 
-Ces commandes créent 2 environnements conda, `r_tp1`  et `r_tp2`, qui serviront à l'exécution des TPs.
+2. sinon, exécutez les commandes
+    ```
+    conda env create -f TPs/envs_local/r_tp_apple_silicon.yaml
+    conda activate r_tp
+    bash TPs/envs_local/r_tp_apple_silicon.sh
+    ```
+
+Ces commandes créent un environnement conda, `r_tp`,  qui servira  à l'exécution des TPs.
 
 ### 2.3 Lancement de RStudio (ou autre IDE)
 
 Si vous n'avez pas d'IDE déjà installé, téléchargez et installez RStudio depuis [cette
 page](https://www.rstudio.com/products/rstudio/download/#download). Lorsque vous ouvrez RStudio, l'interpréteur
 `R` utilisé sera celui installé par défaut sur votre ordinateur. Pour avoir toutes les librairies nécessaires pour le TP
-1, vous devez configurer RStudio pour que l'interpréteur `R` utilisé soit celui de l'environnement `r_tp1` créé
-ci-dessus (de même vous devrez configurer RStudio pour utiliser l'interpréteur `R` de l'environnement `r_tp2`
-pour le TP 2).
+1, vous devez configurer RStudio pour que l'interpréteur `R` utilisé soit celui de l'environnement `r_tp` créé
+ci-dessus.
 
 Pour configurer l'interpréteur `R` de RStudio, 3 solutions possibles:
 
-1.  Depuis le terminal de commande, activez l'environnement conda `r_tp1` (resp. `r_tp2`) et lancez RStudio
+1.  Depuis le terminal de commande, activez l'environnement conda `r_tp` et lancez RStudio
     ou votre IDE préféré avec la commande (exemple avec Mac)
 
     ```
@@ -151,22 +158,26 @@ Pour configurer l'interpréteur `R` de RStudio, 3 solutions possibles:
     ```
 
 2. Depuis RStudio, allez dans Outils (Tools) > Options Générales (Global Options). Dans le menu Général (General),
-   remplacez le chemin par défaut par le chemin de la commande `R` de votre environnemnt `r_tp1`. Par exemple,
-   `/usr/local/anaconda3/envs/r_tp1/bin/R`.  Cette solution n'a pas été testée.
+   remplacez le chemin par défaut par le chemin de la commande `R` de votre environnemnt `r_tp`. Par exemple,
+   `/usr/local/anaconda3/envs/r_tp/bin/R`.  Cette solution n'a pas été testée.
 
 3. Vous pouvez configurer les paramètres de de RStudio en exportant des variables d'environnement dans un
    fichier `~/.profile`. Plus précisément, exécutez les commandes suivantes depuis votre terminal de commande
 
     ```
-    echo "export RSTUDIO_WHICH_R=/path/to/r_tp1/bin/R" > ~/.profile
-    echo "export R_LIBS_USER=/path/to/r_tp1/lib/R/library" >> ~/.profile
-    echo "export R_LIBS_SITE=/path/to/r_tp1/lib/R/library" >> ~/.profile
+    echo "export RSTUDIO_WHICH_R=/path/to/r_tp/bin/R" > ~/.profile
+    echo "export R_LIBS_USER=/path/to/r_tp/lib/R/library" >> ~/.profile
+    echo "export R_LIBS_SITE=/path/to/r_tp/lib/R/library" >> ~/.profile
     ```
 
     où vous devez remplacer `/path/to` par le chemin correspondant sur votre ordinateur. Redémarrez ensuite votre
     Rstudio. Cette solution a été partiellement testée. Des problèmes ont été rencontrés avec des versions récentes de
     `Rstudio` (cf cet [issue sur github](https://github.com/rstudio/rstudio/issues/12508)). Une installation d'une
     version de Rstudio datant d'avant 12/2022 peut-être nécessaire.
+
+    NOTE: cette solution ne fonctionne plus sur les versions de RStudio postérieures à Decembre 2022. Choissisez une
+    version antérieure ou reportez vous au ticket github ouvert sur le sujet
+    <https://github.com/rstudio/rstudio/issues/12508>.
 
 
 ### 2.4 Tests installations

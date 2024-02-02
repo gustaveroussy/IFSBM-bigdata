@@ -118,7 +118,7 @@ plot_coefs_logistic_regression <- function(nCoeffsPlot=20, CoeffsA, CoeffsB, col
                 col=c(rep(colorA, nCoeffsPlot), rep(colorB, nCoeffsPlot)),
                 cex.names=0.7, las=2, ylim=c(-ymax, ymax))
 
-  text(xx[1:nCoeffsPlot]+1, 
+  text(xx[1:nCoeffsPlot]+1,
        y=-1,
        label=rownames(CoeffsA)[1:nCoeffsPlot],
        pos=2,
@@ -215,7 +215,7 @@ read_df_maf_into_obj_maf <- function(df_maf, remove_duplicates=T, remove_non_std
                                 useAll=T,
                                 removeDuplicatedVariants=remove_duplicates,
                                 vc_nonSyn=vc_non_syn)
-                                
+
 
   obj_maf
 }
@@ -236,7 +236,7 @@ page](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/#protected-maf-fi
   - Tumor_Seq_Allele2
   - Variant_Type
 
-You should then convert the `df_maf` dataframe into `maftools::MAF` object using the function `read_df_maf_into_obj_maf`. 
+You should then convert the `df_maf` dataframe into `maftools::MAF` object using the function `read_df_maf_into_obj_maf`.
 
 *Hint*:  You will need to use the `rename` function from `dplyr` package. You may use the function directly on a table
 `mytable` via the syntax `mytable %>% dplyr::rename(new_name=old_name)`. You don't need to use double quotes `"`  around
@@ -250,7 +250,7 @@ obj_maf <- # YOUR WORK HERE
 The following chunk will draw an oncoplot to help you visualize the distribution of mutations across genes and samples.
 To fit the plot into the notebook we will limit ourselves to genes mutated in at least 5\% of patients.
 
-```{r prepare oncoplot, include=F, eval=eval_chunks} 
+```{r prepare oncoplot, include=F, eval=eval_chunks}
 # show only genes mutated in at least 5% of patients
 min_freq <- 0.05
 n_tumors <- length(unique(TcgaData$MUT$patientId))
@@ -268,7 +268,7 @@ df_cln <- TcgaData$CLINIC %>% rownames_to_column(var="Tumor_Sample_Barcode") %>%
   mutate(Tumor_Sample_Barcode=gsub("\\.", "-", Tumor_Sample_Barcode))
 
 # sort genes
-genes_sorted <- df_maf %>% distinct(Tumor_Sample_Barcode, Hugo_Symbol) %>% arrange(Hugo_Symbol) %>% 
+genes_sorted <- df_maf %>% distinct(Tumor_Sample_Barcode, Hugo_Symbol) %>% arrange(Hugo_Symbol) %>%
   group_by(Hugo_Symbol) %>% summarize(n=n()) %>% arrange(desc(n)) %>% pull(var=Hugo_Symbol)
 genes_list <- intersect(genes_sorted, genes_list)
 
@@ -287,7 +287,7 @@ oncoplot_colors <- list(bg="#f5f3f4",
 obj_maf_oncoplot <- maftools::read.maf(maf=df_maf,
                                        clinicalData             = df_cln %>% replace(is.na(.), "NA"),
                                        removeDuplicatedVariants = FALSE,
-                                       useAll                   = TRUE,            
+                                       useAll                   = TRUE,
                                        gisticAllLesionsFile     = NULL,
                                        gisticAmpGenesFile       = NULL,
                                        gisticDelGenesFile       = NULL,
@@ -310,7 +310,7 @@ DrawOncoplot(obj_maf_oncoplot, genes_list, df_left_bar_data=NULL, df_right_bar_d
 dev.off()
 ```
 
-```{r draw oncoplot, echo=F, fig.height=8, fig.width=8, fig.align="center", fig.cap="Oncoplot TCGA LIHC", dpi=300, eval=eval_chunks}
+```{r draw oncoplot, echo=F, fig.height=8, fig.width=8, fig.align="center", fig.cap="Oncoplot TCGA LIHC", dpi=300}
 knitr::include_graphics('oncoplot_tcga_lihc.png')
 ```
 
@@ -330,7 +330,6 @@ times each specific mutation was seen in the samples from TCGA LIHC study.
 
 **ANSWER**
 
-
 ## 2.3 Compute 96-class mutational profile
 
 We will now build the 96-class mutational profiles for the TCGA `LIHC` patients for which the data was loaded into the
@@ -348,14 +347,14 @@ get_mutation_count_matrix <- function(df_maf, remove_duplicates=T, remove_non_st
 
 
   # get name of reference genome to be used
-  genome_build_to_ref_genome <- list(hg19="BSgenome.Hsapiens.UCSC.hg19", 
+  genome_build_to_ref_genome <- list(hg19="BSgenome.Hsapiens.UCSC.hg19",
                                      hg38="BSgenome.HSapiens.UCSC.hg38",
                                      mm10="BSgenome.Mmusculus.UCSC.mm10")
 
   genome_build <- match.arg(genome_build)
   ref_genome <- genome_build_to_ref_genome[[genome_build]]
 
-  # if chromosome names are not prefixed with "chr", add it 
+  # if chromosome names are not prefixed with "chr", add it
   # you will need to use grepl and "^chr" regex to first identify which rows do not have the prefix
   # then you may apply paste0("chr", myvector) to add "chr" prefix to all elements of myvector
 
@@ -394,15 +393,9 @@ get_mutation_count_matrix <- function(df_maf, remove_duplicates=T, remove_non_st
 }
 ```
 
-```{r apply get mutation count matrix on MAF, eval=eval_chunks}
-df_count <- get_mutation_count_matrix(df_maf=df_maf, remove_duplicates=T, remove_non_std_chr=T,
-                                      vc_non_syn=NULL, genome_build="hg19")
-```
-
-
 **QUESTION 2)** What are `hg19`, `hg38`, and `mmc10` reference genomes? How do they differ? What is the effect of
 setting the option `remove_non_std_chr=TRUE` in the function `read_df_maf_into_obj_maf`? What is the effect of setting
-the option `useSyn=TRUE` in the function `maftools::trinucleotideMatrix`? 
+the option `useSyn=TRUE` in the function `maftools::trinucleotideMatrix`?
 
 &nbsp;
 
@@ -413,6 +406,12 @@ of the function `read_df_maf_into_obj_maf` defined at the beginning of the noteb
 
 **ANSWER**
 
+
+```{r apply get mutation count matrix on MAF, eval=eval_chunks}
+df_count <- get_mutation_count_matrix(df_maf=df_maf, remove_duplicates=T, remove_non_std_chr=T,
+                                      vc_non_syn=NULL, genome_build="hg19")
+```
+
 **INCLASS WORK**: Select only the columns corresponding to patients having at least 50 point mutations.
 
 ```{r select at least 50 mut, eval=eval_chunks}
@@ -422,7 +421,6 @@ df_count_50 <- # YOUR WORK HERE
 
 **QUESTION 3)** What is in your opinion the reason why we do not consider mutation profiles of patients where less than
 50 point mutations were detected?
-
 
 &nbsp;
 
@@ -473,7 +471,6 @@ project_onto_reference <- function(V, W){
 }
 ```
 
-
 **INCLASS WORK**: Use the load function to load the `.rda` files `../data/signatures_cosmic_aetiologies_v3.2.rda` and
 `../data/signatures_cosmic_sbs_96_v3.2.rda`. You may see the object loaded in the list of environment variables at the
 right of your Rstudio. Alternatively, running `ls()` will tell you all the variables that exist. Build the matrix `W` of
@@ -490,10 +487,23 @@ out_project <- project_onto_reference(# YOUR WORK HERE)
 ```
 
 
-**INCLASS WORK**: Visualize the activities of the signatures in your set of patients. 
+**INCLASS WORK**: Visualize the activities of the signatures in your set of patients. You will need to divide the each
+column of $H$ by the column sum of $V$ to have relative signature activities instead of absolute activities (i.e
+mutation counts).
 
-```{r visualize signature activities, eval=eval_chunks}
-# YOUR WORK HERE
+```{r visualize signature activities,  fig.cap="Mutational signatures heatmap", fig.height=10, fig.width=6, fig.align="center", dpi=600, eval=eval_chunks}
+sig_activities <- out_project$H
+for (colname in colnames(sig_activities)){
+  sig_activities[, colname] <- sig_activities[,colname]/sum(df_count_50[,colname])
+
+}
+
+sig_aetiologies <- setNames(signatures_cosmic_aetiologies_v3.2$Signature,  signatures_cosmic_aetiologies_v3.2$Aetiology)
+matches_aetiology <- match(rownames(sig_activities), sig_aetiologies)
+rownames(sig_activities) <- paste(rownames(sig_activities), names(sig_aetiologies)[matches_aetiology])
+sig_activities <- sig_activities[rev(rownames(sig_activities)), ]
+
+heatmap(as.matrix(sig_activities), Rowv=NA, Colv=NULL, keep.dendro=F, cexRow=0.4, cexCol=0.1)
 ```
 
 
@@ -511,35 +521,44 @@ library(glmnet)
 
 The next chunk processes the `OS_STATUS` variable of the `TcgaData$CLINIC` table to make it usable in survival models.
 
-```{r load data survival, eval=eval_chunks}
+```{r load data survival}
 CgcTable <- read.csv("../data/CancerGeneCensusCOSMIC_20240117.csv")
 CgcGenes <- CgcTable$Gene.Symbol
+
+TcgaData <- readRDS("../data/lihc_mut_exp.RDS")
 
 TcgaData$CLINIC[TcgaData$CLINIC$OS_STATUS=="0:LIVING", "Vital_Status"] <- "Alive"
 TcgaData$CLINIC[TcgaData$CLINIC$OS_STATUS=="1:DECEASED", "Vital_Status"] <- "Deceased"
 TcgaData$CLINIC[TcgaData$CLINIC$OS_STATUS=="0:LIVING", "OS_STATUS"] <- 0
 TcgaData$CLINIC[TcgaData$CLINIC$OS_STATUS=="1:DECEASED", "OS_STATUS"] <- 1
 TcgaData$CLINIC["OS_STATUS"] <- as.numeric(TcgaData$CLINIC$OS_STATUS)
+TcgaData$CLINIC["OS_MONTHS"] <- as.numeric(TcgaData$CLINIC$OS_MONTHS)
+
+# select only patients with expression and survival data
+patients_by_modality <- list(row.names(TcgaData$CLINIC), row.names(TcgaData$EXP), unique(TcgaData$MUT$patientId))
+patients_common <- Reduce(intersect, patients_by_modality)
+TcgaData$CLINIC <- TcgaData$CLINIC[patients_common,]
+TcgaData$EXP <- TcgaData$EXP[patients_common,]
+TcgaData$MUT <- TcgaData$MUT %>% filter(patientId %in% patients_common)
+
 ```
 
-Unfortunatly, there are some NAs in the data, in particular survival data. In this work, we will handle NAs by just
+Unfortunately, there are some NAs in the data, in particular survival data. In this work, we will handle NAs by just
 discarding them. This is acceptable because there is a low number of such cases. It would not be suitable otherwise. We
 will also discard patients with survival time of 0.
 
-```{r remove bad survival data, eval=eval_chunks}
+```{r remove bad survival data}
 patientsWithNAs <- rowSums(is.na(TcgaData$CLINIC[,c("OS_MONTHS", "OS_STATUS")])) > 0
+patientsWithNAsNames <- rownames(TcgaData$CLINIC[patientsWithNAs,])
 TcgaData$CLINIC <- TcgaData$CLINIC[!patientsWithNAs,]
 TcgaData$EXP <- TcgaData$EXP[!patientsWithNAs,]
-TcgaData$MUT <- TcgaData$MUT[!patientsWithNAs,]
-TcgaData$MUTEXT <- TcgaData$MUTEXT %>%
-  filter(!case_id %in% gsub("\\.", "-", names(patientsWithNAs)[patientsWithNAs]))
+TcgaData$MUT <- TcgaData$MUT %>% filter(!patientId %in% patientsWithNAsNames)
 
 patientsWithZeroOS <- TcgaData$CLINIC$OS_MONTHS == 0
+patientsWithZeroOSNames <- rownames(TcgaData$CLINIC[patientsWithZeroOS,])
 TcgaData$CLINIC <- TcgaData$CLINIC[!patientsWithZeroOS,]
 TcgaData$EXP <- TcgaData$EXP[!patientsWithZeroOS,]
-TcgaData$MUT <- TcgaData$MUT[!patientsWithZeroOS,]
-TcgaData$MUTEXT <- TcgaData$MUTEXT %>%
-  filter(!case_id %in% gsub("\\.", "-", names(patientsWithZeroOS)[patientsWithZeroOS]))
+TcgaData$MUT <- TcgaData$MUT %>% filter(!patientId %in% patientsWithZeroOSNames)
 ```
 
 ## 3.2 Survival
@@ -552,10 +571,10 @@ $P_{l} = P_{l-1} \cdot \left( \frac{ NatRisk_{l}- Ndeath_{l} }{ NatRisk_{l}} \ri
 The cumulative probability of survival allow you to plot the Kaplan-Meier curve, which is a standard way to visualize
 the distribution of the survival data accross the cohort.
 
-```{r plot survival data, fig.height=6, fig.width=6, fig.align="center", eval=eval_chunks}
+```{r plot survival data, fig.height=6, fig.width=6, fig.align="center"}
 plot(survfit(Surv(time = TcgaData$CLINIC$OS_MONTHS, event=TcgaData$CLINIC$OS_STATUS) ~ NULL),
-     mark.time = T, 
-     main="Kaplan Meier curve", 
+     mark.time = T,
+     main="Kaplan Meier curve",
      ylab="Probability of survival", xlab="Time in months")
 ```
 
@@ -565,22 +584,36 @@ plot(survfit(Surv(time = TcgaData$CLINIC$OS_MONTHS, event=TcgaData$CLINIC$OS_STA
 
 **ANSWER**
 
-You should look for the value on the x-axis where the survival curves meets the probability 0.5 on the y-axis. Using
-this technique, the median survival time of these patients was approximately 60 months, or 5 years.
-
 &nbsp;
 
 Tumors may be graded or classified according to many classification systems. The AJCC classification system, also
 called, TNM system, provides a risk classification of the tumor according to the tumor size, spread to nearby lymph
-nodes, and spread to other body parts (metastases). 
+nodes, and spread to other body parts (metastases).
 
 **INCLASS WORK**: Draw the Kaplan-Meier curves of the LIHC patients stratified by the AJCC classification system. The
 classification is available in the variable `AJCC_PATHOLOGIC_TUMOR_STAGE`. For the purpose of the graph, you should first
-simplify the classification to have only 4 classes, namely `STAGE I/II/III/IV`. 
+simplify the classification to have only 4 classes, namely `STAGE I/II/III/IV`.
 
-```{r plot survival data ajcc}
-# YOUR WORK HERE
+```{r plot survival data ajcc, eval=eval_chunks}
+TcgaData$CLINIC$AJCC_SIMPLE <- # YOUR WORK HERE
+
+stage_unique <- setdiff(sort(unique(TcgaData$CLINIC$AJCC_SIMPLE)), NA)
+stage_colors <- getColors(stage_unique)
+patientsWithNAsStage <- is.na(TcgaData$CLINIC$AJCC_SIMPLE)
+
+plot(survfit(Surv(time=# YOUR WORK HERE,
+                  event=# YOUR WORK HERE
+                  ) ~ # YOUR WORK HERE
+             ),
+     mark.time = T,
+     col=unlist(stage_colors),
+     main="Kaplan Meier curve",
+     ylab="Probability of survival", xlab="Time in months")
+
+legend("topright",legend=stage_unique, pch=16, cex=0.8,
+       col=sapply(stage_unique, function(x) stage_colors[[x]]))
 ```
+
 
 ## 4.3 A semi-parametric model survival: the Cox model
 
@@ -590,7 +623,7 @@ expression data. Your task now is to predict the survival time of patients using
 Modeling survival data for various parameters is a historical discipline (Cox introduced his model in his 1972 paper
 [@cox_regression_1972]). In the last two decades, the emergence of inceasingly high-throughput sequencing techniques has
 made the analysis of associations between the molecular profiles and phenotypes of cancers a much more challenging task.
-Predicting the survival time is particularly difficult as you will see in this example. 
+Predicting the survival time is particularly difficult as you will see in this example.
 
 Modeling survival looks like a regression task because you have numeric data to predict. However, survival analysis is a
 distinct discipline due to the fact that the observation of the outcome is not always complete. The observed time may be
@@ -610,22 +643,21 @@ predicive of good and poor prognosis.
 `glmnet` function changing `family = "binomial"` to `family = "cox"` in order to train a Cox model. The `y` argument of
 the glmnet function should be a `Surv` object as in the chunk of the first Kaplan-Meier curve above. Mutations statuses
 may be obtained directly from `TcgaData$MUT` after conversion of the aminoacid changes to 1/0 status or may be obtained
-by processing `TcgaData$MUTEXT`. 
+by processing `TcgaData$MUTEXT`.
 
 ```{r cox model, eval=eval_chunks}
 # select survival variables
 SurvivalData <- TcgaData$CLINIC  %>% select(OS_STATUS, OS_MONTHS)
 
 # prepare mutations variables
-MutationsData <- TcgaData$MUT
-MutationsData[MutationsData!="NaN"] <- 1
-MutationsData[MutationsData=="NaN"] <- NA
-MutationsData[is.na(MutationsData)] <- 0
-MutationsData <- matrix(as.numeric(MutationsData),
-                        ncol=ncol(MutationsData),
-                        dimnames=list(rownames(MutationsData), colnames(MutationsData)))
+MutationsData <- data.frame(row.names=rownames(TcgaData$CLINIC))
+for (CgcGene in CgcGenes){
+  patientsMutated <- TcgaData$MUT %>% filter(hugoGeneSymbol==CgcGene) %>% distinct(patientId) %>% pull(var=patientId)
+  MutationsData[CgcGene] <- 0
+  MutationsData[patientsMutated, CgcGene] <- 1
+}
 
-# select among CgcGenes only the genes mutated in at least 3% of the cohort
+# select among CgcGenes only the genes mutated in at least 5% of the cohort
 genes_use <- # YOUR WORK HERE
 MutationsData <- MutationsData[,genes_use]
 
@@ -643,29 +675,8 @@ print(paste("Training size:", length(trainIndex)))
 print(paste("Test size:", length(testIndex)))
 ```
 
-```{r fit glmnet cox cv, eval=eval_chunks}
-fitCoxCv <- cv.glmnet(
-  x=#YOUR WORK HERE. Don't forget to cast as.matrix,
-  y=#YOUR WORK HERE,
-  family=#YOUR WORK HERE,
-  alpha=1,
-  nfolds=10,
-  type.measure="C"
-)
-plot(fitCoxCv)
-print(paste("You best value of lambda is :", fitCoxCv$lambda.min))
-```
-
 ```{r coef glmnet cox best, fig.cap="Top Cox model coefficients", fig.height=6, fig.width=6, fig.align="center", eval=eval_chunks}
-fitCoxReduced <-glmnet(
-  x=# YOUR WORK HERE,
-  y=# YOUR WORK HERE,
-  family=# YOUR WORK HERE,
-  alpha=1,
-  lambda=# YOUR WORK HERE
-)
-
-fitCoxCoefs <- as.matrix(coefficients(fitCoxReduced))
+fitCoxCoefs <- as.matrix(coefficients(fitCoxCv))
 fitCoxCoefs <- fitCoxCoefs[!grepl("(Intercept)", rownames(fitCoxCoefs)),,drop=F]
 
 GoodGenes <- fitCoxCoefs[fitCoxCoefs < 0,,drop=F]
@@ -681,7 +692,7 @@ xx <- barplot(height=c(BadGenes[1:nGenesPlot], GoodGenes[1:nGenesPlot]),
               col=c(rep("#ff758f", nGenesPlot), rep("#aacc00", nGenesPlot)),
               cex.names=0.7, las=2, ylim=c(-ymax, ymax))
 
-text(xx[1:nGenesPlot]+0.5, 
+text(xx[1:nGenesPlot]+0.5,
      y=-0.05,
      label=rownames(BadGenes)[1:nGenesPlot],
      pos=2,
@@ -696,17 +707,9 @@ text(xx[(nGenesPlot+1):(2*nGenesPlot)]-0.5,
      srt=90)
 ```
 
-
 **QUESTION 5)** How would you explain to a clinician (mathematical words not allowed) what a C-index is? Comment on the
 C-index of your model (good enough to use in clinic?).
 
 &nbsp;
 
 **ANSWER**
-
-The C-index measures, out of all pairs of patients that are comparable, the proportion of pairs that are correctly
-ranked by the model. A pair of patient is incomparable only if the first patient was censored before the other patient
-died as we don't know if the first patient survived longer or not. For all other cases, the pair is correctly ranked by
-the model if it predicts a lower risk for the patient that lived longer. Our model has a very poor performance with a
-C-index value in the range of 0.52-54 (0.5 is the C-index value for a **random** model). This model SHOULD NOT be used
-in the clinic.

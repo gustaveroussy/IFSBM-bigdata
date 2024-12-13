@@ -31,7 +31,7 @@ première fois les TPs 1 et 2 tels qu'ils vous sont fournis.
 
 ### 1.1 Découverte de R, Rstudio et du cloud.
 
-Pour les TPs, un lien vers un espace sur le cloud vous sera directement fourni. Pour faire les exercices `R_beginner`
+Pour les TPs, un lien vers un espace sur le cloud vous est directement fourni. Pour faire les exercices `R_beginner`
 vous devez d'abord vous créer un compte sur [posit](https://posit.cloud/). Cliquez sur "Sign Up" en haut à gauche et
 créez vous un compte. Une fois connecté, vous arrivez sur une page ressemblant à la capture d'écran ci-dessous
 

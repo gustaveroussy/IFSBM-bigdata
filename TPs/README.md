@@ -31,25 +31,31 @@ première fois les TPs 1 et 2 tels qu'ils vous sont fournis.
 
 ### 1.1 Découverte de R, Rstudio et du cloud.
 
-Pour les TPs, un lien vers un espace sur le cloud vous est directement fourni. Pour faire les exercices `R_beginner`
-vous devez d'abord vous créer un compte sur [posit](https://posit.cloud/). Cliquez sur "Sign Up" en haut à gauche et
-créez vous un compte. Une fois connecté, vous arrivez sur une page ressemblant à la capture d'écran ci-dessous
+Pour les TPs, un lien vers un espace sur le cloud vous est directement fourni. Cliquez sur le lien, et connectez-vous.
+La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier. Si
+vous n'avez pas de compte vous pouvez vous connecter via votre adresse gmail ou votre compte github (recommandé) ou vous
+pouvez créer un compte en cliquant sur "Don't have an account? Sign Up".
 
-<img src="img/posit.png" align="middle" />
+Une fois connecté, sélectionnez le projet "IFSBM-bigdata-2024-2025", le projet se déploie sur votre compte et vous ouvre
+une session RStudio placée dans une copie de ce projet (qui est lui-même une copie de ce répertoire github
+<https://github.com/gustaveroussy/IFSBM-bigdata>) contenant la matériel pour les TPs. Si vous quittez votre projet et
+vous vous reconnectez à nouveau sur [posit](https://posit.cloud/), **vous aurez deux projets "IFSBM-bigdata-2024-2025",
+l'un étant le template vide et l'autre étant votre copie propre. Faites attention à bien sélectionner votre propre copie
+lorsque vous reprenez votre travail.**
 
-Cliquez ensuite sur "New Project" puis "New project from Git repository" et collez l'URL
-"https://github.com/gustaveroussy/IFSBM-bigdata". Depuis l'onglet Terminal, exécutez
 
-```
-Rscript TPs/R_beginner/packages_install.R
-```
+### 1.2 Exercices R beginner
 
-Ensuite, depuis l'aborescence à droite, naviguez vers TPs > R_beginner et double-cliquez sur le fichier
-`Rbeginner-exercices-1-3.Rmd`.  Cliquez ensuite sur le bouton "Knit" pour knit le document en entier une première fois.
+Pour faire les exercices `R_beginner`, cliquez sur "TPs > R_beginner > Rbeginner-exercices-1-3.Rmd" dans l'aborescence
+en bas à droite. Un fichier s'ouvre dans l'éditeur dans la partie centrale de votre écran. C'est un R markdown,
+l'équivalent R des fichiers notebook ".ipynb". Si vous ne connaissez pas du tout ce type de fichier, consultez la page
+<https://rmarkdown.rstudio.com/authoring_quick_tour.html>.
+
+Au-dessus du fichier, il y a un bouton "Knit". Cliquez sur ce bouton pour knit le document en entier une première fois.
 La première fois, RStudio vous demande d'installer une dépendence supplémentaire: cliquez sur "Ok". Après quelques
-instants d'exécution, le document rendu apparait au format html dans une nouvelle fenêtre. Si vous avez un popup
-blocker, une fenêtre intitulée "Popup blocked" apparait d'abord. Cliquez alors sur "Try Again" et la Rmarkdown rendu
-apparait.
+instants d'exécution, le document rendu apparait au format html dans une nouvelle
+fenêtre. Si vous avez un popup blocker, une fenêtre intitulée "Popup blocked" apparait d'abord. Cliquez alors sur "Try
+Again" et la Rmarkdown rendu (en pdf ou html) apparait.
 
 Vous pouvez ensuite remplir les "chunks" de code pour une à une et tester votre code en cliquant sur le bouton vert
 à droite de la "chunk" ou en utilisant un raccourci clavier.
@@ -60,22 +66,9 @@ Vous pouvez ensuite remplir les "chunks" de code pour une à une et tester votre
 |Run all chunks above   | Ctrl+Alt+P   | Command+Option+P |
 |Run current chunk |	Ctrl+Alt+C |	Command+Option+C |
 
-### 1.2 Déploiement des TPs
+### 1.3 Installation de conda et des dépendences pour les TPs
 
-1. La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vous sera demandé de vous authentifier.
-   Si vous n'avez pas de compte (vous devriez en avoir un si vous avez suivi les exercices `R_beginner`) vous pouvez
-   vous connecter via votre adresse gmail ou votre compte github (recommandé) ou vous pouvez créer un compte en cliquant
-   sur "Don't have an account? Sign Up".
-
-2. Une fois connecté, le projet se déploie sur votre compte et vous ouvre une session RStudio placée dans une copie de
-   ce répertoire github <https://github.com/gustaveroussy/IFSBM-bigdata> contenant la matériel pour les TPs . Sur la barre
-   des menus en haut, cliquez sur "Save a Permanent Copy" pour avoir votre copie du projet. Ainsi, toute modification
-   que vous ferez par la suite n'affectera que votre session et sera sauvegardée.
-
-
-### 1.3 Installation de conda et des dépendences
-
-Depuis RStudio, cliquez sur l'onglet `Terminal` puis executez les commandes
+Depuis RStudio, cliquez sur l'onglet `Terminal` puis exécutez les commandes
 
 ```
 Rscript TPs/envs_cloud/packages_install.R
@@ -86,7 +79,7 @@ bash TPs/envs_cloud/tensorflow_setup.sh
 *Remarque*: le script `conda_setup.sh` install miniconda3 tandis que `tensorflow_setup.sh` créé un un environnement
 conda dans lequel python et tensorflow sont installés. Cet environnement sera ensuite chargé au cours des TPs.
 
-### 1.4 Tests installations
+### 1.4 Tests des installations pour le TP
 
 Dans l'arborescence en bas à droite, naviguez jusqu'à `TPs > R_TP1 > src` pour le TP 1 ou
 `TPs > R_TP2 > src` pour le TP 2, et double-cliquez sur le fichier `.Rmd` pour l'ouvrir. Cliquez ensuite

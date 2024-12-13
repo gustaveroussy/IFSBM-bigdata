@@ -47,7 +47,8 @@ lorsque vous reprenez votre travail.**
 ### 1.2 Exercices R beginner
 
 Pour faire les exercices `R_beginner`, cliquez sur "TPs > R_beginner > Rbeginner-exercices-1-3.Rmd" dans l'aborescence
-en bas à droite. Un fichier s'ouvre dans l'éditeur dans la partie centrale de votre écran. C'est un R markdown,
+en bas à droite depuis votre espace projet "IFSBM-bigdata-2024-2025" sur votre session cloud posit (cf 1.1
+au-dessus). Un fichier s'ouvre dans l'éditeur dans la partie centrale de votre écran. C'est un R markdown,
 l'équivalent R des fichiers notebook ".ipynb". Si vous ne connaissez pas du tout ce type de fichier, consultez la page
 <https://rmarkdown.rstudio.com/authoring_quick_tour.html>.
 

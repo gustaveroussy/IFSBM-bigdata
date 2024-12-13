@@ -20,7 +20,7 @@ facilement reproductible. Ce n'est pas la seule solution, `renv` est aussi prati
 que `conda` est bien plus général.
 
 Pour les TPs 1 et 2, vous pouvez soit faire le TP en utilisant une session [posit cloud](https://posit.cloud) dont le
-lien vous sera communiqué le jour J (Option 1 et recommandée), soit suivre depuis votre ordinateur (Option 2).
+lien vous a été communiqué par email (Option 1 et recommandée), soit suivre depuis votre ordinateur (Option 2).
 
 Il est recommandé de faire le TP depuis la session cloud qui vous est proposée dont l'environnement a été préalablement
 testé. Si toutefois vous souhaitez suivre sans utiliser le cloud, assurez-vous d'avoir exécuté au préalable toutes les

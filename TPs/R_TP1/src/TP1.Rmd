@@ -45,14 +45,14 @@ current and/or future research challenges.
 ## 1.2 Main steps
 
 In this notebook, you will be guided through **TCGA** data. Briefly, TCGA is an american--led international consortium
-initiated in 2006 and completed in 2018 with the publication of 23 research papers forming the PanCancer Atlas 
+initiated in 2006 and completed in 2018 with the publication of 23 research papers forming the PanCancer Atlas
 [@the_cancer_genome_atlas_research_network_cancer_2013]. It aimed
 at deciphering the molecular profiles of 33 common cancer types. If you want to know more, check the [TCGA official
 page](https://www.cancer.gov/ccg/research/genome-sequencing/tcga) and the [PanCancer Atlas
 webpage](https://www.cell.com/pb-assets/consortium/pancanceratlas/pancani3/index.html).
 
 We shall download only parts of the data in order to be able to run jobs within a reasonable amount of time. To achieve
-this we will try to make the most of prior biomedical research and reduce our queries to most relevant genes. 
+this we will try to make the most of prior biomedical research and reduce our queries to most relevant genes.
 
 The notebook is organized as follows
 
@@ -60,12 +60,12 @@ The notebook is organized as follows
    expression data.
 2. in a second step we will implement simple and regularized classification models to perform a 4-class
    classification task from expression data.
-3. in a third step, we will implement a deep neural network to perform a many-class classification task from expression 
+3. in a third step, we will implement a deep neural network to perform a many-class classification task from expression
    data.
 
-The examples we will see have a real scientific and medical interest. To dive further, you are more than welcome to 
-apply for internships or permanent positions of research teams to become a researcher in bioinformatics and/or machine 
-learning. 
+The examples we will see have a real scientific and medical interest. To dive further, you are more than welcome to
+apply for internships or permanent positions of research teams to become a researcher in bioinformatics and/or machine
+learning.
 
 ## 1.3 In practice
 
@@ -75,7 +75,7 @@ Explanations and corrections will be given throughout the notebook for a subset 
 **IMPORTANT**
 There are questions in this notebook that you need to answer and code that you need to write by yourself during the lab
 or at home. The ones you have to do during the lab are be indicated by a tag "INCLASS WORK", and the ones you have to
-after the class are indicated by "HOME WORK". 
+after the class are indicated by "HOME WORK".
 
 You will have to **complete both** and send the completed notebooks back to us. These completed notebooks will be
 **USED FOR EVALUATING YOUR WORK IN THIS MODULE AND GIVE YOU A MARK**.
@@ -88,10 +88,10 @@ An  *R notebook* is an R Markdown document (*.Rmd*) with text parts and R code p
 executed independently and interactively. R notebooks can be rendered (or knit) into different formats (*.pdf*, *.html*,
 *.docx*) using a renderer.  The `rmarkdown` R package ([see doc
 here](https://cran.r-project.org/web/packages/rmarkdown/rmarkdown.pdf)) provides a lot of functions to render a
-notebook. 
+notebook.
 
 Running `render('TP1.Rmd', html_document())` from the R console will create a
-file *TP1.html*  that you can then open with your favorite web browser. 
+file *TP1.html*  that you can then open with your favorite web browser.
 
 `RStudio` already provides you with commands to render your R notebook by taking into accounts the headers that are
 specified at the top of document. You can knit your notebook with the `Preview` button or by pressing `Ctrl+Shift+K` (OS
@@ -116,7 +116,7 @@ output:
 Try executing the following chunk by clicking the `Run` button within the chunk or by placing your cursor inside it and
 pressing `Ctrl+Enter` from within `R Studio`.
 
-```{r welcome} 
+```{r welcome}
 print("Welcome to 'Big Data et predictive models' lab session")
 ```
 
@@ -156,7 +156,7 @@ errors as you make progress. Don't forget to set the chunk option` eval=TRUE` wh
 
 # 3. "Standard" classification.
 
-Over the course of the last three decades, many studies were conducted in which molecular and clinical data from 
+Over the course of the last three decades, many studies were conducted in which molecular and clinical data from
 about individuals with particular medical conditions (a specific cancer type for instance) were collected in order to
 describe the **molecular profile** of these conditions and better understand how they influence clinical outcomes.
 
@@ -175,7 +175,7 @@ fuel active research.
 
 The anonymized data is either in restricted or public access. To access the raw data (sequencing reads) you will need
 the authorization of a data user committee. To access processed data (e.g gene expression tables), you don't need any
-authorization. It can nevertheless be difficult to retrieve this data by hand and then load it into R. 
+authorization. It can nevertheless be difficult to retrieve this data by hand and then load it into R.
 
 In this part of the notebook we will conduct a classification experiment using **expression data** from the TCGA. As you
 may know, the human genome contains tens of thousands of genes giving rise to gene expression tables whose storage may
@@ -249,6 +249,7 @@ getColors <- function(vec, pal="Dark2", alpha=0.7){
   colors
 }
 
+
 getConfusionMatrix <- function(labelsPredicted, labelsCorrect, labels=NULL){
   if (is.null(labels)){
     labels <- unique(union(labelsPredicted, labelsCorrect))
@@ -267,7 +268,6 @@ getConfusionMatrix <- function(labelsPredicted, labelsCorrect, labels=NULL){
 }
 
 
-
 plot_coefs_logistic_regression <- function(nCoeffsPlot=20, CoeffsA, CoeffsB, colorA, colorB){
   ymax <- max(abs(CoeffsA)[1], abs(CoeffsB)[1])
   ymax <- ceiling(ymax/10**(round(log10(ymax))))*10**(round(log10(ymax)))
@@ -275,7 +275,7 @@ plot_coefs_logistic_regression <- function(nCoeffsPlot=20, CoeffsA, CoeffsB, col
                 col=c(rep(colorA, nCoeffsPlot), rep(colorB, nCoeffsPlot)),
                 cex.names=0.7, las=2, ylim=c(-ymax, ymax))
 
-  text(xx[1:nCoeffsPlot]+1, 
+  text(xx[1:nCoeffsPlot]+1,
        y=-1,
        label=rownames(CoeffsA)[1:nCoeffsPlot],
        pos=2,
@@ -289,11 +289,44 @@ plot_coefs_logistic_regression <- function(nCoeffsPlot=20, CoeffsA, CoeffsB, col
        cex=0.7,
        srt=90)
 }
+
+
+plot_coefs_multinomial_regression <- function(coef_matrix, mar=c(0,3,2,0), oma=c(2,2,2,2)){
+  # Prepare for plotting
+  classes <- colnames(coef_matrix)
+  covariates <- rownames(coef_matrix)
+  n_classes <- ncol(coef_matrix)
+
+  # Barplot
+  par(mfrow = c(1, n_classes), mar=c(0,3,2,0), oma=c(2, 2, 2, 2))
+  for (i in 1:n_classes) {
+    bar_values <- coef_matrix[, i]
+
+    # Separate positive and negative values
+    pos_values <- pmax(bar_values, 0)  # Positive values
+    neg_values <- pmin(bar_values, 0)  # Negative values
+
+    # Create horizontal bars
+    barplot(
+      pos_values, horiz = TRUE, xlim = c(min(bar_values), max(bar_values)),
+      names.arg = covariates, las = 2, col = "blue",
+      main = classes[i], cex.names=0.4, cex.main = 1.2,
+      space=0.2, width=0.8, border=NA, axes=T
+    )
+    barplot(
+      neg_values, horiz = TRUE, xlim = c(min(bar_values), max(bar_values)),
+      names.arg = FALSE, col = "red", add = TRUE,
+      space=0.2, width=0.8, border=NA
+    )
+
+    abline(v = 0, col = "black", lwd = 0.5, lty = 1)
+  }
+}
 ```
 
 &nbsp;
 
-**INCLASS WORK** Load the list of genes from the cancer gene census file `../data/CancerGeneCensusCOSMIC_20240117.csv` 
+**INCLASS WORK** Load the list of genes from the cancer gene census file `../data/CancerGeneCensusCOSMIC_20240117.csv`
 and then load the *normalized* RNA expression profiles for the `BLCA` and `LUSC` TCGA **pancancer atlas 2018 studies**
 by loading the `blca_lusc_exp.RDS` object.
 
@@ -307,8 +340,8 @@ More specifically
 
 &nbsp;
 
-*Hint*: In regular expression (i.e computer language), the "OR" logical connector is written `|`. Moreover, in R `T` 
-stands for `TRUE` and `F` stands for `FALSE`. Look at the arguments of `LoadcBioportal` to understand the possibilities 
+*Hint*: In regular expression (i.e computer language), the "OR" logical connector is written `|`. Moreover, in R `T`
+stands for `TRUE` and `F` stands for `FALSE`. Look at the arguments of `LoadcBioportal` to understand the possibilities
 of the function.
 
 &nbsp;
@@ -327,7 +360,7 @@ happen that data modalities (clinical, expression, mutation) are not available a
 **INCLASS WORK** Intersect the lists of patients of `EXP` and `CLINIC` tables (patient names are stored in the row
 names) to select only patients having both clinical data and expression profiles. Save the output into a `patients_common`
 variable. Then the tables are subsetted and aligned to the this patient list. You will need the `intersect` and
-`rownames` R functions for this task. 
+`rownames` R functions for this task.
 
 ```{r intersect patients, eval=eval_chunks}
 patients_common <-  # YOUR WORK HERE
@@ -341,7 +374,7 @@ We now have `TcgaData$EXP` and `TcgaData$CLINIC` data tables with the same patie
 ## 3.3 Description of the data
 
 The first very important step is to visualize and describe your data. It can be tricky when you have huge
-multidimensional matrices. 
+multidimensional matrices.
 
 For continuous data such as RNA-seq, simply plotting the distribution is a good first step. The expression profiles were
 normalized using a log-min-max normalization ($X$ is original profile of size the number of genes, $Y=log10(X+1)$,
@@ -393,7 +426,7 @@ Are the expression profiles in `TcgaData$EXP` table modified (log-min-max normal
 RPKM values?
 
 *Hint*: To understand what rsem.genes.normalized_results TCGA files are, read the answer to the following post
-<https://www.biostars.org/p/106127/>. 
+<https://www.biostars.org/p/106127/>.
 
 &nbsp;
 
@@ -421,7 +454,7 @@ may be performed by performing **Singular Value Decomposition** on the centered 
 ```{r compute PCA, eval=eval_chunks}
 X <- t(t(TcgaData$EXP) - rowMeans(t(TcgaData$EXP)))
 resSVD <- svd(X, nu=2, nv=2)
-# the scores are the principal components i.e the 
+# the scores are the principal components i.e the
 # low-dimensional representations of the samples
 scores <- resSVD$u %*% diag(resSVD$d[1:2])
 ```
@@ -429,7 +462,7 @@ scores <- resSVD$u %*% diag(resSVD$d[1:2])
 ```{r draw PCA, fig.cap="PCA TCGA expression data", fig.height=6, fig.width=6, fig.align="center", eval=eval_chunks}
 # plot the two first principal components
 plot(scores[,1],scores[,2],
-     col=unlist(colorsStudy[TcgaData$CLINIC$study]), 
+     col=unlist(colorsStudy[TcgaData$CLINIC$study]),
      pch=16,main='PCA representation',
      xlab=paste("dim1 = ",100*round(resSVD$d[1]^2/sum(resSVD$d^2),3),"%",sep = ""),
      ylab=paste("dim2 = ",100*round(resSVD$d[2]^2/sum(resSVD$d^2),3),"%",sep = ""))
@@ -614,7 +647,7 @@ TRUE)]` will return `c("Gaby", "Tom", "Ethan")`.
 ```{r split train/test tumor stage, eval=eval_chunks}
 # select only BLCA patients
 totalIndex <- row.names(TcgaData$CLINIC)
-totalBlcaIndex <- # YOUR WORK HERE 
+totalBlcaIndex <- # YOUR WORK HERE
 totalBlcaSize <- length(totalBlcaIndex)
 
 # remove patients with NAs for AJCC_PATHOLOGIC_TUMOR_STAGE
@@ -652,16 +685,16 @@ fitBlca <- glmnet(
 
 # get the model predictions on the train and test splits
 BlcaPredictedTrain <- # YOUR WORK HERE
-BlcaPredictedTest <- # YOUR WORK HERE 
+BlcaPredictedTest <- # YOUR WORK HERE
 
 # get the model train/test accuracies
 accuracyBlcaTrain <- # YOUR WORK HERE
-accuracyBlcaTest <- # YOUR WORK HERE 
+accuracyBlcaTest <- # YOUR WORK HERE
 cat(paste("Training accuracy:", accuracyBlcaTrain, "\nTest accuracy:", accuracyBlcaTest))
 
 # get the confusion matrices
 confMatBlcaTrain <- getConfusionMatrix(BlcaPredictedTrain, stageCorrectBlcaTrain)
-confMatBlcaTest <- getConfusionMatrix(BlcaPredictedTest, stageCorrectBlcaTest) 
+confMatBlcaTest <- getConfusionMatrix(BlcaPredictedTest, stageCorrectBlcaTest)
 
 # display the confusion matrices
 kBlcaTrain <- kable(confMatBlcaTrain, caption="Train")
@@ -693,7 +726,7 @@ coefficients assigned to these genes by the model.
 function. This `factor` column is then converted into numeric values internally to fit the model. In a binary
 classification task, negative coefficients contribute to predicting the "0" class while positive coefficients contribute
 to predicting the "1" class. You can check the order levels of a `factor` variable by running
-`levels(as.factor(your_variable))` to know what label was mapped to 0 and what label was mapped to 1. 
+`levels(as.factor(your_variable))` to know what label was mapped to 0 and what label was mapped to 1.
 
 ```{r interpret coefs no reg, eval=eval_chunks}
 # extract coefficients and remove the intercept
@@ -805,7 +838,7 @@ parameter should be to balance against the relative importance of the likelihood
 &nbsp;
 
 
-**INCLASS WORK**: Rerun the lasso logistic regression using the optimal values of $\lambda$ and evaluate its quality. Show 
+**INCLASS WORK**: Rerun the lasso logistic regression using the optimal values of $\lambda$ and evaluate its quality. Show
 again the values of the coefficients of the top 20 most discriminative genes for both "Early stage" and "Late stage".
 
 ```{r fit and assess glmnet reg best, eval=eval_chunks}
@@ -853,302 +886,164 @@ argument your answer.
 
 &nbsp;
 
-**ANSWER**: 
-
-&nbsp;
-
-# 4. "Deep" classification.
-
-You will now enter the wide, wild and exciting field of Deep Learning! Neural Networks and Deep Learning have
-revolutionized the performance of many Machine Learning tasks  in image analysis, video analysis, natural language
-processing and many other "traditional" classification, regression or clustering tasks.
-
-As for the "standard" classification tasks, you will be dealing with a huge amount of variables (genes expression per
-patient) compared to the number of patients. You again would like to **provide the clinician with a simple output** that
-he can use for his patients.
-
-In this part, will be to try to improve upon your last model for classifying between "Early stage" and "Late stage" in
-BLCA tumors using  a neural network. An introduction to convolutional neural networks with MNIST dataset is included in
-section 4.2 but will not be performed in class due to time constraints. You are however more than welcome to try it by
-yourself and ask questions.
-
-## 4.1 Build your first neural network with Keras.
-
-### 4.1.1 About Keras.
-
-[Keras](https://keras.io/) is a Python deep learning library designed to help human build and train neural networks of 
-many different types. It builds on top of [Tensorflow 2](https://www.tensorflow.org/), an end-to-end open source
-platform for machine leanring. The Keras has an R interface through the [Keras R package](https://keras.rstudio.com/)
-which will be using in this lab.
-
-The math is pre-computed, and functions are relatively user-friendly: is a high level API. It can use several
-lower level back-ends for the math and calculation. Keras and Tensorflow have been develloped by Google
-and are open source.
-
-In order to install keras using the R package, you will need a conda environment with tensorflow and keras
-installed. If you are working from posit cloud (recommended) and followed the startup instructions, the command below
-should work.
-
-```{r load keras library}
-library(keras)
-use_condaenv(condaenv="tensorflow")
-```
-
-You can check with the command `conda info --envs` run from a command line interface that an environment named `tensorflow`
-exists. If not, read the instructions from the README. After running this cell, restart your R studio. Check that your
-installation is correct by verifying that the next chunk does not return an error.
-
-```{r test keras installation}
-model <- keras_model_sequential()
-```
-
-### 4.1.2 Build a neural network
-
-Building the neural network means building individual layers and connecting them through different methods. Once your
-have build your network, you can compile and then fit it on the data. The data used will be the expression of selected
-genes from BLCA patients and the task to be performed is the binary classification between "Early stage" and "Late
-stage". We will need to have the outcome in numerical format so let's create a numerical variable encoding the binary
-tumor stage.
-
-```{r create numeric outcome, eval=eval_chunks}
-TcgaData$CLINIC$BINARY_TUMOR_STAGE_NUM <- as.numeric(as.factor(TcgaData$CLINIC$BINARY_TUMOR_STAGE))-1
-stageNumCorrectBlcaTrain <- TcgaData$CLINIC[trainBlcaIndex,"BINARY_TUMOR_STAGE_NUM"]
-stageNumCorrectBlcaTest <- TcgaData$CLINIC[testBlcaIndex,"BINARY_TUMOR_STAGE_NUM"]
-```
-
-The basic building block of a neural network is the **layer**. Layers sequentially learn representations of the data fed
-into them and outputs their new representation to the following layer until the last layer that provides a representation
-suitable for performing a given tasks.
-
-**INCLASS WORK**  Define a neural network by defining a sequence of three dense layers (the input layer of size 128, one
-intermediate layer of size 30, and the output layer of size 1). For this first exercise, you have to build a network
-with only one hidden layer (with 30 neurons). The input layer should take as input a vector of size the number of genes
-in the `TcgaData$EXP` table while the output layer should produce a size-1 vector of "class probability"
-(neural networks outputs are not in general probabilities). 
-
-*Hint*: In order to build your first model you will need the following functions
-1. `keras_model_sequential` to initialize the model object.
-2. `layer_dense` to create dense layers (i.e fully connected).
-
-You may find information in the [online documentation](https://cran.r-project.org/web/packages/keras/keras.pdf) of the R
-keras package.
-
-```{r first nn model, eval=eval_chunks}
-#### YOUR WORK HERE
-```
-
-You can visualize your model architecture by just printing the model as in the following chunk
-
-```{r first nn model summary, eval=eval_chunks}
-print(model)
-```
-
-**QUESTION 8)** What does the `activation` parameter represent in the `layer_dense` function from keras? Give example
-values for this parameter.
-
 **ANSWER**:
 
 &nbsp;
 
-### 4.1.3 Train a neural network
+# 4. Multiclass classification.
 
-Before the model is ready for training, it needs a few more settings. These are added during the model's compilation 
-step. In particular, you need to specify the following
+Let's now try again the task of discriminating between tumor types using expression data but this time will train
+a *multiclass classification* model using softmax regression (the multiclass version of the logistic regression).
 
-1. **The loss function** - This measures how accurate the model is during training. We want to minimize this function to
-   "steer" the model in the right direction. Careful designing of the loss function allows to train networks with
-   specific properties (regularized for instance).
+For that purpose, we will load expression data from 10 different tumor types from the TCGA dataset.
 
-2. **Optimizer** - This is the numerical methods used to update the network's weights so as to minimize the loss
-   function. 
+## 4.1 Data loading and visualization
 
-3. **Metrics** - Used to monitor the training and testing steps. The following example uses accuracy, the fraction of
-   the samples that are correctly classified.
+```{r load expression from 10 tumor types}
+# load data from ten tumor types
+TcgaData10 <- readRDS("../data/ten_tumor_types_exp.RDS")
 
+# select only patients with both clinical and expression data available
+patients_by_modality <- list(row.names(TcgaData10$CLINIC), row.names(TcgaData10$EXP))
+patients_common <- Reduce(intersect, patients_by_modality)
+TcgaData10$CLINIC <- TcgaData10$CLINIC[patients_common,]
+TcgaData10$EXP <- TcgaData10$EXP[patients_common,]
 
-**INCLASS WORK**  Apply the compilation step on your model by specifying the parameters mentioned above. You should use
-`adam` as an optimizer, `binary_crossentropy` as a loss function and `accuracy` as a metric.
+# drop genes missing expression in one patient or more
+TcgaData10$EXP <- TcgaData10$EXP[, colSums(is.na(TcgaData10$EXP)) == 0]
 
-*Hint*: Look into [this example](https://tensorflow.rstudio.com/guide/keras/) and into the documentation of the
-`compile` function.
+# colors
+colorsStudy10 <- getColors(TcgaData10$CLINIC$study, alpha=1)
+```
 
-```{r compile first nn model, eval=eval_chunks}
+**QUESTION 8)** How many patients have both clinical and expression data available in the data file
+"../data/ten_tumor_types_exp.RDS"? How many from each tumor type? Make a summary table to answer the question.
+
+```{r load expresssion data counts, eval=student_mode}
 # YOUR WORK HERE
 ```
 
-In order to train your neural network, you will have to provide it with the training data (predictive variables and
-predicted variable) as well as extra parameters specifiying the `validation_split` for assessing the model performance
-during the training, the number of `epochs` or the batch size.
+Let's visualize our dataset using vanilla 2D PCA representation.
 
-**QUESTION 9)** What are epochs? What is the batch size? What could be the advantage of reducing or increasing the batch
-size?
+
+```{r draw PCA 10, fig.cap="PCA TCGA expression data 10 tumor types", fig.height=6, fig.width=6, fig.align="center"}
+X <- t(t(TcgaData10$EXP) - rowMeans(t(TcgaData10$EXP)))
+resSVD <- svd(X, nu=2, nv=2)
+# the scores are the principal components i.e the
+# low-dimensional representations of the samples
+scores <- resSVD$u %*% diag(resSVD$d[1:2])
+
+# plot the two first principal components
+plot(scores[,1],scores[,2],
+     col=unlist(colorsStudy10[TcgaData10$CLINIC$study]),
+     pch=16,main='PCA representation',
+     xlab=paste("dim1 = ",100*round(resSVD$d[1]^2/sum(resSVD$d^2),3),"%",sep = ""),
+     ylab=paste("dim2 = ",100*round(resSVD$d[2]^2/sum(resSVD$d^2),3),"%",sep = ""))
+
+legend_labels <- unique(TcgaData10$CLINIC$study)
+legend_colors <- sapply(legend_labels, function(x) colorsStudy10[[x]])
+legend("bottomright", legend=legend_labels, pch=16, cex=0.8, col=legend_colors)
+```
+
+
+## 4.2 Multiclass classification
+
+
+**INCLASS WORK**: Split your data into a training and a test set. Run a lasso **multinomial** regression with internal cross validation and print the confusion matrices of your model on the train and test sets. Make a heatmap or table with genes in rows and tumor types in columns and display the values of the coefficients of each gene for predicting the membership to each of the ten classes to be predicted. Limit yourself to only the genes that are non-zero in at least one tumor type.
+
+**Hint**: reuse code from the previous tasks. You may use the function "plot_coefs_multinomial_regression" to draw the plot. This function expects a matrix with covariates names as row names and classes names as column names.
+
+### Train/test split
+
+To begin with, we shall split the data into a training set and a test set.
+
+```{r split train/test tcga 10, eval=eval_chunks}
+# split total list of rows between data between train and test row lists
+totalIndex <- row.names(TcgaData10$CLINIC)
+totalSize <- length(totalIndex)
+trainProp <- 0.8
+train10Index <- # YOUR WORK HERE
+test10Index <- # YOUR WORK HERE
+
+# record correct labels for train/test
+studyCorrect10Train <- as.matrix(TcgaData10$CLINIC)[train10Index,"study"]
+studyCorrect10Test <- as.matrix(TcgaData10$CLINIC)[test10Index,"study"]
+
+cat(paste("Training size:", length(train10Index), "\nTest size:", length(test10Index)))
+```
+
+The model is now trained on the training data identified using "train10Index" set of indices.
+
+```{r train reg model tcga 10, eval=eval_chunks}
+# fit the model
+fit10Cv <- cv.glmnet(
+  x=# TODO
+  y=# TODO
+  family=# TODO
+  alpha=1,
+  nfolds=10
+)
+
+plot(fit10Cv)
+print(paste("You best value of lambda is :", fit10Cv$lambda.min))
+```
+
+Now that the model has been trained, let's assess its predictive performance on the training data and on the unseen test
+data.
+
+```{r assess glmnet 10 reg best, eval=eval_chunks}
+# TODO: get the model predictions on the train and test splits
+Predicted10Train <- # TODO
+Predicted10Test <- # TODO
+
+# get the model train/test accuracies
+accuracy10Train <- # TODO
+accuracy10Test <- # TODO
+cat(paste("Training accuracy:", accuracy10Train, "\nTest accuracy:", accuracy10Test))
+
+# get the confusion matrices. Use getConfusionMatrix function
+confMat10Train <- # TODO
+confMat10Test <-  # TODO
+
+# display the confusion matrices
+k10Train <- kable(confMat10Train, caption="Train")
+k10Test <- kable(confMat10Test, caption="Test")
+kables(list(k10Train, k10Test), format="html", caption="Confusion matrices 10 tumor types")
+```
+
+Let us now visualize the coefficients of the models to try to understand how the predictions are made.
+
+
+```{r visualize models coeffs 10 best, fig.cap="Non-zero predictors 10-class classifier", fig.height=12, fig.width=8, fig.align="center", dpi=600, eval=eval_chunks}
+# Extract coefficients for each class
+coefficients <- coef(fit10Cv, s = "lambda.min")
+class_names <- names(coefficients)
+covariate_names <- rownames(coefficients[[1]])
+
+# Combine coefficients into a matrix
+coef_matrix <- do.call(cbind, lapply(coefficients, as.matrix))
+rownames(coef_matrix) <- covariate_names
+colnames(coef_matrix) <- class_names
+
+# TODO: make matrix `coef_matrix_non_zero` using `coef_matrix`
+# 1. select covariates with non-zero coefficients in at least one class
+# 2. exclude the intercept
+# 3. sort the covariates alphabetically
+# YOUR WORK HERE
+
+plot_coefs_multinomial_regression(coef_matrix_non_zero)
+```
+
+**QUESTION 9)** Screen the scientific literature searching for a couple of genes reported as important predictors by the
+model for some of the 10 classes. Report here URLs to a papers as well as a short sentence stating that "this paper
+supports that expression/silencing of gene XXX is a feature of XXX cancer" or "Gene XXX has been associated with XXX by
+this paper".
+
+&nbsp;
 
 **ANSWER**:
 
 &nbsp;
- 
-A very nice way to visualize the evolution of the network accuracy is through the learning curves which may take
-multiple forms. In particular, one type of learning curve is the plotting of the score of your model as it moves
-through the epochs. You can do this plot very simply by applying the `plot` function on the `history` object produced by
-the `fit` function from the previous chunk.
-
-**INCLASS WORK:** Use the `fit` method to train your neural network on the training data and draw the learning curves.
-Train it on 50 epochs using a validation split of 20%. Save the output of the `fit` function in a variable called
-`history`. 
-
-*Hint*: You will need the `trainBlcaIndex` variable to select only rows in the training set and you will need to use the
-"BINARY_TUMOR_STAGE_NUM" column in the `TcgaData$CLINIC` table for the labels. You can apply the function `plot` on the
-`history` variable to draw the learning curves.
-
-```{r train first nn model, eval=eval_chunks}
-# YOUR WORK HERE
-```
-
-### 4.1.4 Assess  your neural network
-
-Next, assess how the model performs on the test dataset and compare with the classification models explored in the
-previous part.
-
-**INCLASS WORK** Use the `evaluate` method to evaluate the quality of your neural network on test data.Use the `predict`
-method to get the "probabilities" predicted by the neural network (the values of the terminal node) and then transform
-them into label predictions "Early stage" and "Late stage" using `0.5` as a threshold.
-
-*Hint*: You will need to use `trainBlcaIndex` and `testBlcaIndex` variables to retrieve the labels predicted by the model
-on the training and test sets. You will need to cast the dataframe `TcgaData$EXP` into a matrix after having selected
-the rows using the `as.matrix` function.
-
-```{r evaluate first nn model, eval=eval_chunks}
-# get accuracies
-scoreTrain <- # YOUR WORK HERE
-scoreTest <- # YOUR WORK HERE
-
-accuracyTrain <- scoreTrain[["accuracy"]]
-accuracyTest <- scoreTest[["accuracy"]]
-cat(paste("Training accuracy:", accuracyTrain, "\nTest accuracy:", accuracyTest))
-
-# get vector of predicted labels
-stagePredictedBlcaTrain <- # YOUR WORK HERE
-stagePredictedBlcaTest <- # YOUR WORK HERE
-
-# get confusion matrices
-confMatTrain <- getConfusionMatrix(stagePredictedBlcaTrain, stageCorrectBlcaTrain)
-confMatTest <- getConfusionMatrix(stagePredictedBlcaTest, stageCorrectBlcaTest)
-
-kTrain <- kable(confMatTrain, caption="Train")
-kTest <- kable(confMatTest, caption="Test")
-kables(list(kTrain, kTest), format="html", caption="Confusion matrices BLCA tumor stage - NN")
-```
-
-**QUESTION 10)**  How does the test accuracy compare against the train accuracy? The validation accuracy? How does the
-neural network compares against the other classification models?
-
-**ANSWER**:
-
-&nbsp;
-
-## 4.2. Build your first CNN
-
-This part is OPTIONAL. It will contribute **bonus points** in case you decide to perform this part.
-
-Convolutional neural networks are a specific type of neural networks that use a reduced number of parameters compared
-to conventional feed-forward neural network by exploiting the local structure that exists in the input data. These
-networks are particularly performan on images which are highly structured data.
-
-In this exercice you will be training a Convolutional neural network on the now famous [MNIST data set](
-http://yann.lecun.com/exdb/mnist/).
-
-### 4.2.1 Load the MNIST data
-
-```{r load data mnist, eval=eval_chunks}
-mnist   <- keras::dataset_mnist()
-x_train <- mnist$train$x          # 3d array (60000,28,28)
-y_train <- mnist$train$y          # 1d array (60000)
-x_test  <- mnist$test$x           # 3d array (10000,28,28)
-y_test  <- mnist$test$y           # 1d array (60000)
-
-colorsDigit <- getColors(as.character(y_train), pal="Paired")
-```
-
-### 4.2.2 Visualize some examples
-
-As usual, let's have a look at the data
-
-```{r visualize mnist, fig.width=4, fig.height=4, fig.cap="36 Images from MNIST", fig.align="center", eval=eval_chunks}
-par(mfcol=c(6,6))
-par(mar=c(0, 0, 0, 0), xaxs='i', yaxs='i')
-for (idx in 1:36) { 
-    im <- x_train[idx,,]
-    im <- t(apply(im, 2, rev)) 
-    image(1:28, 1:28, 1-im, ann=F, xaxt="n", yaxt="n", col=gray((0:255)/255), main=NULL)
-}
-```
-
-For the needs of the model and the next step, the following chunk reshapes the data into matrices by flattening the
-28x28 images into 756-long vectors and one-hot encoding the observation labels.
-
-```{r prepare data mnist, eval=eval_chunks}
-x_train <- keras::array_reshape(x_train, c(nrow(x_train), 784))
-x_test  <- keras::array_reshape(x_test, c(nrow(x_test), 784))
-x_train <- x_train/255
-x_test  <- x_test/255
-y_train_cat <- keras::to_categorical(y_train, 10)
-y_test_cat  <- keras::to_categorical(y_test, 10)
-```
-
-To begin with, let's go for a naive strategy and run a PCA analysis on the input training samples to see how they
-cluster.
-
-**OPTIONAL WORK** Reuse the code you already saw in order to run a PCA on the MNIST data set and see how the digits
-clusters in the first principal components.
-
-```{r svd mnist, eval=eval_chunks}
-# YOUR WORK HERE
-```
-
-### 4.2.3 Build your CNN model
-
-```{r cnn image, echo = FALSE, out.width = '75%', fig.align="center"}
-knitr::include_graphics('../../img/conv_2d-all.png')
-```
-
-```{r prepare data mnist CNN, eval=eval_chunks}
-mnist   <- keras::dataset_mnist()
-x_train <- mnist$train$x          # 3d array (60000,28,28)
-y_train <- mnist$train$y          # 1d array (60000)
-
-x_test  <- mnist$test$x           # 3d array (10000,28,28)
-y_test  <- mnist$test$y           # 1d array (60000)
-
-x_train <- x_train/255
-x_test  <- x_test/255
-
-x_train <- array_reshape(x_train, c(nrow(x_train), 28, 28, 1)) # 4d array (60000, 28, 28, 1)
-x_test <- array_reshape(x_test, c(nrow(x_test), 28, 28, 1)) # 4d array (60000, 28, 28, 1)
-
-y_train_cat <- keras::to_categorical(y_train, 10)
-y_test_cat  <- keras::to_categorical(y_test, 10)
-```
-
-**OPTIONAL WORK** Build the convolutional neural network displayed in the image above, compile and train it the MNIST
-data set. Has your performance improved?
-
-```{r cnn model mnist, eval=eval_chunks}
-# YOUR WORK HERE
-```
-
-Confusion matrices
-
-```{r evaluate cnn model mnist, eval=eval_chunks}
-predictedTrain <- model %>% predict(x=x_train) %>% k_argmax()
-predictedTest <- model %>% predict(x=x_test) %>% k_argmax()
-
-confMatTrain <- getConfusionMatrix(as.character(predictedTrain), as.character(y_train))
-confMatTest <- getConfusionMatrix(as.character(predictedTest), as.character(y_test))
-
-ktrain <- kable(confMatTrain, caption="Train")
-ktest <- kable(confMatTest, caption="Test")
-kables(list(ktrain, ktest), format="html", caption="Confusion matrices")
-```
 
 # End
 

@@ -56,7 +56,8 @@ Au-dessus du fichier, il y a un bouton "Knit". Cliquez sur ce bouton pour knit l
 La première fois, RStudio vous demande d'installer une dépendence supplémentaire: cliquez sur "Ok". Après quelques
 instants d'exécution, le document rendu apparait au format html dans une nouvelle
 fenêtre. Si vous avez un popup blocker, une fenêtre intitulée "Popup blocked" apparait d'abord. Cliquez alors sur "Try
-Again" et la Rmarkdown rendu (en pdf ou html) apparait.
+Again" et la Rmarkdown rendu (en pdf ou html) apparait dans l'arborescence en bas à droite. C'est le résultat de votre
+travail !
 
 Vous pouvez ensuite remplir les "chunks" de code pour une à une et tester votre code en cliquant sur le bouton vert
 à droite de la "chunk" ou en utilisant un raccourci clavier.
@@ -73,12 +74,7 @@ Depuis RStudio, cliquez sur l'onglet `Terminal` puis exécutez les commandes
 
 ```
 Rscript TPs/envs_cloud/packages_install.R
-bash TPs/envs_cloud/conda_setup.sh
-bash TPs/envs_cloud/tensorflow_setup.sh
 ```
-
-*Remarque*: le script `conda_setup.sh` install miniconda3 tandis que `tensorflow_setup.sh` créé un un environnement
-conda dans lequel python et tensorflow sont installés. Cet environnement sera ensuite chargé au cours des TPs.
 
 ### 1.4 Tests des installations pour le TP
 

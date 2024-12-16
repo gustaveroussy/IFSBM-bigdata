@@ -7,7 +7,7 @@ channels:
   - defaults
   - r
 dependencies:
-  - r-base=4.2
+  - r-base
   - r-biocmanager
   - r-data.table
   - r-dbplyr=2.3.4
@@ -16,8 +16,8 @@ dependencies:
   - r-glmnet
   - r-htmltools
   - r-htmlwidgets
-  - r-keras
   - r-maditr
+  - r-mass
   - r-rcolorbrewer
   - r-reshape2
   - r-rmarkdown
@@ -30,5 +30,3 @@ dependencies:
   - pandas
   - scipy
   - requests
-  - tensorflow-deps
-  - tensorflow-base

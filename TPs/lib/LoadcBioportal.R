@@ -31,6 +31,7 @@ bind_rows_smart <- function(data1, data2){
 #' @param ClinicNeeded Set to TRUE to load clinical data.
 #' @param RNANeeded Set to TRUE to load RNA data.
 #' @param MutNeeded Set to TRUE to load mutation data.
+#' @param MutIgnoreGenes Set to TRUE to load all mutations regardless of the genes specified.
 #' @param NormalizeRNA Set to TRUE to perform the normalization log((x-min(X))/(max(X)-min(X))+1) with X the vector of
 #' expression profiles of gene x for all patients.
 LoadcBioportal<-function(StudyId=NULL,
@@ -40,6 +41,7 @@ LoadcBioportal<-function(StudyId=NULL,
                          ClinicNeeded=T,
                          RNANeeded=F,
                          MutNeeded=T,
+                         MutIgnoreGenes=F,
                          NormalizeRNA=T){
 
 
@@ -56,7 +58,7 @@ LoadcBioportal<-function(StudyId=NULL,
   cbio <- cBioPortal()
 
   ## list all cancer studies available
-  
+
   # cbioportalR
   # DfCancerStudies <- cbp_api("studies", base_url=base_url)$content %>%
   #   dplyr::bind_rows(.) %>%
@@ -142,10 +144,10 @@ LoadcBioportal<-function(StudyId=NULL,
         print(paste("No rnaseq v2 mrna for", mycancerstudy))
       } else {
         mymolecularprofiles[["rna"]] <- mymolecularprofile
-      } 
+      }
     }
 
-    # # if Mut required 
+    # # if Mut required
     # if (MutNeeded){
     #   mymolecularprofile <- DfMolProfiles %>%
     #     filter(molecularAlterationType=="MUTATION") %>%
@@ -155,10 +157,10 @@ LoadcBioportal<-function(StudyId=NULL,
     #     print(paste("No mutation for", mycancerstudy))
     #   } else {
     #     mymolecularprofiles[["mut"]] <- mymolecularprofile
-    #   } 
+    #   }
     # }
 
-    # # if MutExt required 
+    # # if MutExt required
     # if (MutExtNeeded){
     #   mymolecularprofile <- DfMolProfiles %>%
     #     filter(molecularAlterationType=="MUTATION_EXTENDED") %>%
@@ -168,7 +170,7 @@ LoadcBioportal<-function(StudyId=NULL,
     #     print(paste("No mutation for", mycancerstudy))
     #   } else {
     #     mymolecularprofiles[["mutext"]] <- mymolecularprofile
-    #   } 
+    #   }
     # }
 
     # pull the data via cbioportalData
@@ -177,8 +179,10 @@ LoadcBioportal<-function(StudyId=NULL,
       cat(paste0("\t-", x, ": ", mymolecularprofiles[[x]]), "\n")
     }
 
-    cancerstudydata <- cBioPortalData(api=cbio, by="hugoGeneSymbol", studyId=mycancerstudy, genes=Genes,
-                                      molecularProfileIds=unlist(mymolecularprofiles))
+    if (length(mymolecularprofiles)>0){
+      cancerstudydata <- cBioPortalData(api=cbio, by="entrezGeneId", studyId=mycancerstudy, genes=EntrezGenes,
+                                        molecularProfileIds=unlist(mymolecularprofiles))
+    }
 
     # if (!is.null(mymolecularprofiles[["mut"]])){
     #   MUT1 <- assay(cancerstudydata, mymolecularprofiles[["mut"]])
@@ -232,11 +236,15 @@ LoadcBioportal<-function(StudyId=NULL,
     # get mutations in MAF format
     if(MutNeeded){
       molecularprofile <- molecularprofiles[grepl("mutations", molecularprofiles)]
-      MUT1 <- get_mutations_by_sample(sample_id=mysamplelist, genes=EntrezGenes, molecular_profile_id=molecularprofile)
+      if (MutIgnoreGenes){
+        genes <- NULL
+      } else {
+        genes <- EntrezGenes
+      }
+      MUT1 <- get_mutations_by_sample(sample_id=mysamplelist, genes=genes, molecular_profile_id=molecularprofile)
       MUT <- bind_rows_smart(MUT,MUT1)
       STUDY[mycancerstudy,"Mut"] <- nrow(MUT1)
     }
-
 
     # # get gene expression
     # if(RNANeeded){
@@ -255,7 +263,7 @@ LoadcBioportal<-function(StudyId=NULL,
     #     next()
     #   } else
     #     # as indicated here https://groups.google.com/g/cbioportal/c/1XGHSwuX4J8/m/W-g0nL9jAQAJ, genetic profiles
-    #     # rnaseq_v2_mrna on the cbioportal are extracted from .rsem.genes.normalized_results which contain only two 
+    #     # rnaseq_v2_mrna on the cbioportal are extracted from .rsem.genes.normalized_results which contain only two
     #     # columns namely "gene_id" and "normalized_counts"
     #     # check this post to know normalized_counts are https://www.biostars.org/p/106127/
 
@@ -281,9 +289,18 @@ LoadcBioportal<-function(StudyId=NULL,
     # }
   }
 
+  # drop duplicates
+  EXP <- EXP %>% distinct(patientId, .keep_all=T) %>% as.data.frame()
+
   if (nrow(CLINIC) > 0) CLINIC <- CLINIC %>% column_to_rownames(var="patientId") %>% as.data.frame()
   if (nrow(EXP) > 0) EXP <- EXP %>% column_to_rownames(var="patientId") %>% as.data.frame()
-  if (nrow(MUT) > 0) MUT <- MUT %>% column_to_rownames(var="patientId") %>% as.data.frame()
+  if (nrow(MUT) > 0) MUT <- MUT %>% select(-uniqueSampleKey, -uniquePatientKey, -molecularProfileId)
+
+  # set back to hugo symbol
+  if (GenesType=="hugoGeneSymbol"){
+    entrez2hugo <- setNames(get_hugo_symbol(entrez_id=colnames(EXP))$hugoGeneSymbol, colnames(EXP))
+    colnames(EXP) <- entrez2hugo[colnames(EXP)]
+  }
 
   TcgaData <- list(MUT=MUT, EXP=EXP, CLINIC=CLINIC, STUDY=STUDY)
   return(list(MUT=MUT, EXP=EXP, CLINIC=CLINIC, STUDY=STUDY))
@@ -294,15 +311,7 @@ LoadcBioportal<-function(StudyId=NULL,
 CgcTable <- read.csv("../R_TP1/data/CancerGeneCensusCOSMIC_20240117.csv")
 CgcGenes <- CgcTable$Gene.Symbol
 
-# blca & lusc 
-StudyId="blca_tcga_pan_can_atlas_2018|lusc_tcga_pan_can_atlas_2018"
-Genes=CgcGenes
-GenesType="hugoGeneSymbol"
-ClinicNeeded=T
-MutNeeded=F
-RNANeeded=T
-NormalizeRNA=T
-
+# blca & lusc  exp
 TcgaData <- LoadcBioportal(StudyId="blca_tcga_pan_can_atlas_2018|lusc_tcga_pan_can_atlas_2018",
                            Genes=CgcGenes,
                            GenesType="hugoGeneSymbol",
@@ -311,3 +320,29 @@ TcgaData <- LoadcBioportal(StudyId="blca_tcga_pan_can_atlas_2018|lusc_tcga_pan_c
                            RNANeeded=T,
                            NormalizeRNA=T)
 saveRDS(TcgaData, file="../R_TP1/data/blca_lusc_exp.RDS")
+
+# lihc mut
+TcgaData <- LoadcBioportal(StudyId="lihc_tcga_pan_can_atlas_2018",
+                           Genes=NULL,
+                           GenesType=NULL,
+                           ClinicNeeded=T,
+                           MutNeeded=T,
+                           RNANeeded=F)
+
+saveRDS(TcgaData, file="../R_TP2/data/lihc_mut_exp.RDS")
+
+
+
+# blca brca hnsc lgg luad ov prad thca ucec  exp
+tts <- c("blca", "brca", "hnsc", "lgg", "luad", "ov", "prad", "skcm", "thca", "ucec")
+StudyId <- paste0(paste0(tts, "_tcga_pan_can_atlas_2018"), collapse="|")
+TcgaData <- LoadcBioportal(StudyId=StudyId,
+                           Genes=CgcGenes,
+                           GenesType="hugoGeneSymbol",
+                           ClinicNeeded=T,
+                           MutNeeded=F,
+                           RNANeeded=T,
+                           NormalizeRNA=T)
+
+# simplify
+saveRDS(TcgaData, file="../R_TP1/data/ten_tumor_types_exp.RDS")

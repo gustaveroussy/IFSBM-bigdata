@@ -7,7 +7,7 @@ channels:
   - defaults
   - r
 dependencies:
-  - r-base=4.2
+  - r-base
   - bioconductor-bsgenome
   - bioconductor-bsgenome.hsapiens.ucsc.hg19
   - r-data.table
@@ -17,7 +17,6 @@ dependencies:
   - r-glmnet
   - r-htmltools
   - r-htmlwidgets
-  - r-keras
   - r-maditr
   - bioconductor-maftools
   - bioconductor-mutationalpatterns
@@ -34,6 +33,3 @@ dependencies:
   - scipy
   - requests
   - h5py
-  - pip:
-    - keras
-    - tensorflow-cpu

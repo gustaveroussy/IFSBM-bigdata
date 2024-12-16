@@ -1,0 +1,58 @@
+description,genePanelId
+Targeted (27 cancer genes) sequencing of adenoid cystic carcinomas on Illumina HiSeq sequencers.,ACYC_FMI_27
+Targeted panel of 232 genes.,Agilent
+Targeted panel of 8 genes.,AmpliSeq
+ARCHER-HEME gene panel (199 genes),ARCHER-HEME-CV1
+ARCHER-SOLID Gene Panel (62 genes),ARCHER-SOLID-CV1
+Targeted sequencing of various tumor types via bait v3.,bait_v3
+Targeted sequencing of various tumor types via bait v4.,bait_v4
+Targeted sequencing of various tumor types via bait v5.,bait_v5
+Targeted panel of 387 cancer-related genes.,bcc_unige_2016_cancer_panel
+Research (CMO) IMPACT-Heme gene panel version 3.,HemePACT_v3
+Targeted sequencing of 18 genes via Resolution ctDx Lung assay.,ctDx_lung_panel
+Targeted sequencing of 503 cancer-associated genes on Illumina HiSeq sequencers.,DFCI_504
+"FoundationOne Heme gene panel targets the entire coding sequence of 406 genes, selected introns of 31 genes involved in rearrangements and utilizes RNA sequencing to interrogate 265 genes",FMI-D2
+"FoundationOne Heme gene panel targets the entire coding sequence of 406 genes, selected introns of 31 genes involved in rearrangements and utilizes RNA sequencing to interrogate 265 genes",FMI-R2
+Foundation Medicine T4b gene panel (214 genes),FMI-T4b
+Foundation Medicine T5a gene panel (323 genes),FMI-T5a
+Foundation Medicine T7 gene panel (429 genes),FMI-T7
+Targeted panel of 600 genes.,gbm_tcga_pub_cancer_panel
+DFCI-ONCOPANEL-1 (304 genes),glioma_dfci_2020_DFCI-ONCOPANEL-1
+DFCI-ONCOPANEL-2 (326 genes),glioma_dfci_2020_DFCI-ONCOPANEL-2
+DFCI-ONCOPANEL-3 (447 genes),glioma_dfci_2020_DFCI-ONCOPANEL-3
+Foundation Medicine T5 gene panel (326 genes),glioma_mskcc_2019_fmi_t5
+Foundation Medicine T7 gene panel (434 genes),glioma_mskcc_2019_fmi_t7
+High-intensity targeted sequencing assay by GRAIL covering 508 genes.,grail_cfdna_508
+Targeted variant analysis from 73 cancer genes by Next-Generation (NGS)/Massively parallel sequencing (MPS).,GUARDANT_73
+Targeted (400 cancer genes) sequencing of various tumor types via MSK-IMPACT Heme on Illumina HiSeq sequencers.,IMPACT-HEME-400
+"Targeted (467 cancer genes) sequencing of various tumor types via MSK-IMPACT Heme on Illumina HiSeq sequencers. Originally 468 genes with CDKN2Ap14ARF and CDKN2Ap16INK4A, merged into CDKN2A.",IMPACT-HEME-468
+Hotspot sequencing panel for MSK-IMPACT Heme on Illumina HiSeq sequencers (204 genes).,IMPACT-HEME-HS
+Targeted sequencing of urcc tumor via MSK-IMPACT.,IMPACT230
+Targeted (279 cancer genes) sequencing of various tumor types via MSK-IMPACT on Illumina HiSeq sequencers.,IMPACT279
+Targeted (300 cancer genes) sequencing of bladder urothelial carcinomas via MSK-IMPACT on Illumina HiSeq sequencers.,IMPACT300
+Targeted (341 cancer genes) sequencing of various tumor types via MSK-IMPACT on Illumina HiSeq sequencers.,IMPACT341
+Targeted (410 cancer genes) sequencing of various tumor types via MSK-IMPACT on Illumina HiSeq sequencers.,IMPACT410
+Targeted (468 cancer genes) sequencing of various tumor types via MSK-IMPACT on Illumina HiSeq sequencers.,IMPACT468
+Targeted (505 cancer genes) sequencing of various tumor types via MSK-IMPACT on Illumina HiSeq sequencers.,IMPACT505
+Targeted (152 genes) sequencing of MDS samples from the International Working Group (IWG) for the prognosis of MDS,MDSIWG152
+Targeted NGS of AML/MDs Samples.,Papaemmanuil_NEJM_2016_MDS_2013_panel
+Targeted (173 cancer genes) sequencing of breast cancers on Illumina HiSeq sequencers.,METABRIC_173
+Targeted (129 genes) sequencing of cfDNA via MSK-ACCESS on Illumina HiSeq sequencers.,ACCESS129
+"Targeted sequencing of 15 oncogenes and tumor suppressor genes, selected for their potential as predictive biomarkers of response to targeted agents by Sanger sequencing.",MSKCC_BLCA_15
+"Targeted (343 cancer genes, IMPACT341 plus MYB and NFIB) sequencing of various tumor types via MSK-IMPACT on Illumina HiSeq sequencers.",MYB-IMPACT341
+"Targeted (412 cancer genes, IMPACT410 plus MYB and NFIB) sequencing of various tumor types via MSK-IMPACT on Illumina HiSeq sequencers.",MYB-IMPACT410
+"Targeted (470 cancer genes, IMPACT468 plus MYB and NFIB) sequencing of various tumor types via MSK-IMPACT on Illumina HiSeq sequencers.",MYB-IMPACT468
+Targeted massively parallel sequencing of 4047 cancer genes.,NOVARTIS_BROAD_1651
+Targeted NGS of NSCLC Samples.,NSCLC_UNITO_2016_PANEL
+Targeted panel of 137 genes.,prad_mskcc_sanger
+Targeted panel of 145 genes. (merge of prad_mskcc_sanger and prad_mskcc_sequenom),prad_mskcc_sequenom_sanger
+Targeted panel of 21 genes.,prad_mskcc_sequenom
+Targeted panel for cfDNA sequencing (2 genes),rbl_cfdna_msk_2020_panel
+"Targeted sequencing of clinical cases via Thunderbolts NGS Target Enrichment System, RainDance Technologies.",RDTB49
+"Targeted sequencing of clinical cases via ThunderStorm NGS Target Enrichment System, RainDance Technologies.",RDTS30
+A panel that's designed to target all exons of 262 genes that are recurrently mutated in de novo MDS/AML (â??RMG reagentâ??).,RMG
+Targeted panel of 226 protein-coding genes.,sarc_mskcc_panel
+Targeted deep sequencing (TDS) of 1202 genes on Illumina HiSeq2000 sequencers.,UCLA_1202
+DNA sequencing of 622 genes with known or potential relationships to cancer.,WUSTL-DFCI_623
+FoundationOne gene panel (317 genes),FoundationOne
+Targeted panel of 262 genes.,MDAnderson_T200

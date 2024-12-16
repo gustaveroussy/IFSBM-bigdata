@@ -919,7 +919,7 @@ colorsStudy10 <- getColors(TcgaData10$CLINIC$study, alpha=1)
 **QUESTION 8)** How many patients have both clinical and expression data available in the data file
 "../data/ten_tumor_types_exp.RDS"? How many from each tumor type? Make a summary table to answer the question.
 
-```{r load expresssion data counts, eval=student_mode}
+```{r load expresssion data counts, eval=eval_chunks}
 # YOUR WORK HERE
 ```
 

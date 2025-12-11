@@ -36,3 +36,8 @@ cette UE, nous décrirons quelques unes des données produites par les technolog
 être utilisées pour décrire précisément le profil de la tumeur d'un individu et guider la prise en charge médicale.
 Vous apprendrez les bases d'une poignée de méthodes d'apprentissage automatique (*machine learning*) et verrez des
 applications de ces méthodes sur des données publiques.
+
+### Déroulé
+
+Le programme de cette UE est maintenu à jour sur la feuille Google suivante
+<https://docs.google.com/spreadsheets/d/1_MYl89ELeaxv71p0xBBzO2ADFDq3lzpG9aa3Lrf_Dwk>

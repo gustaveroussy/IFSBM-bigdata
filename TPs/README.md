@@ -36,10 +36,10 @@ La première fois que vous cliquez sur le lien cloud qui vous est fourni, il vou
 vous n'avez pas de compte vous pouvez vous connecter via votre adresse gmail ou votre compte github (recommandé) ou vous
 pouvez créer un compte en cliquant sur "Don't have an account? Sign Up".
 
-Une fois connecté, sélectionnez le projet "IFSBM-bigdata-2024-2025", le projet se déploie sur votre compte et vous ouvre
+Une fois connecté, sélectionnez le projet "IFSBM-bigdata-2025-2026", le projet se déploie sur votre compte et vous ouvre
 une session RStudio placée dans une copie de ce projet (qui est lui-même une copie de ce répertoire github
 <https://github.com/gustaveroussy/IFSBM-bigdata>) contenant la matériel pour les TPs. Si vous quittez votre projet et
-vous vous reconnectez à nouveau sur [posit](https://posit.cloud/), **vous aurez deux projets "IFSBM-bigdata-2024-2025",
+vous vous reconnectez à nouveau sur [posit](https://posit.cloud/), **vous aurez deux projets "IFSBM-bigdata-2025-2026",
 l'un étant le template vide et l'autre étant votre copie propre. Faites attention à bien sélectionner votre propre copie
 lorsque vous reprenez votre travail.**
 
@@ -47,7 +47,7 @@ lorsque vous reprenez votre travail.**
 ### 1.2 Exercices R beginner
 
 Pour faire les exercices `R_beginner`, cliquez sur "TPs > R_beginner > Rbeginner-exercices-1-3.Rmd" dans l'aborescence
-en bas à droite depuis votre espace projet "IFSBM-bigdata-2024-2025" sur votre session cloud posit (cf 1.1
+en bas à droite depuis votre espace projet "IFSBM-bigdata-2025-2026" sur votre session cloud posit (cf 1.1
 au-dessus). Un fichier s'ouvre dans l'éditeur dans la partie centrale de votre écran. C'est un R markdown,
 l'équivalent R des fichiers notebook ".ipynb". Si vous ne connaissez pas du tout ce type de fichier, consultez la page
 <https://rmarkdown.rstudio.com/authoring_quick_tour.html>.

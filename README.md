@@ -1,13 +1,13 @@
 # IFSBM-bigdata
 
-**Dates** 16-18 décembre 2024.
+**Dates** 15-17 décembre 2025.
 
 **Lieu** Bat B2M, Gustave Roussy
 
 **Responsables** Pr. Daniel GAUTHERET (Univ. Paris-Saclay, I2BC), MD. PhD. Julien
 VIBERT (Gustave Roussy), PhD. Yoann Pradat
 
-**Intervenants** PhD. Elsa BERNARD (Gustave Roussy), PhD. Yoann PRADAT (Gustave Roussy), MD. PhD. Roger SUN
+**Intervenants** PhD. Aaron MAMANN (CentraleSupélec), PhD. Yoann PRADAT (Gustave Roussy)
 
 ## UE 11 - Cancer et génomique: des données NGS aux modèles prédictifs
 
@@ -36,9 +36,3 @@ cette UE, nous décrirons quelques unes des données produites par les technolog
 être utilisées pour décrire précisément le profil de la tumeur d'un individu et guider la prise en charge médicale.
 Vous apprendrez les bases d'une poignée de méthodes d'apprentissage automatique (*machine learning*) et verrez des
 applications de ces méthodes sur des données publiques.
-
-
-### Déroulé
-
-Le programme de cette UE est maintenu à jour sur la feuille Google suivante
-<https://docs.google.com/spreadsheets/d/14fmvp__8kX0CrDN6MYRVjJE06OX_VHfkbXtPkB7qAhA/edit?gid=0#gid=0>

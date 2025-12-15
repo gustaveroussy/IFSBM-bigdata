@@ -5,6 +5,8 @@
 .RData
 .DS_store
 .DS_Store?
+TPs/R_TP1/data
+TPs/R_TP2/data
 
 # Pythhon
 __pycache__

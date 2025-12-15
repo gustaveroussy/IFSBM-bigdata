@@ -1,0 +1,967 @@
+---
+title: "TP I IFSBM UE 11: Cancer and genomics"
+subtitle: "Supervised classification tasks."
+author:
+  - Yoann Pradat, PhDc yoann.pradat@gustaveroussy.fr
+  - Julien Vibert, MD, PhD Julien.vibert@gustaveroussy.fr
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+bibliography: references.bib
+link-citations: true
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_float: true
+    code_folding: show
+  rmdformats::material:
+    highlight: kate
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+
+```{r ifsbm logo, echo = FALSE, out.width = '50%', fig.align="center"}
+knitr::include_graphics('../../img/ifsbm_logo.jpeg')
+
+# the two variables below should be set to TRUE when rendering the notebook
+student_mode <- FALSE
+complete_mode <- FALSE
+```
+
+# 1. Introduction & Objectives
+
+## 1.1 Context
+
+With this notebook you will work on real cancer genomic data to address clinical questions.  The problem can be
+summarized this way: your input is a huge amount of variables, such as DNA or RNA sequences for each patient, that you
+wish to use in order to provide clinicians with interpretable information that they can use for their patients.
+
+The main challenge is how to reduce information so that it becomes understandable for a human. That is a central
+objective in many machine learning projects.
+
+Extracting biomedical knowledge from high-dimensional molecular data is currently part of the main challenges of
+personalized medicine, so let's hope you'll enjoy this introductive notebook.
+
+## 1.2 Main steps
+
+In this notebook, you will be guided through TCGA data. Briefly, TCGA is an american--led international consortium
+initiated in 2006 and completed in 2018 with the publication of 23 research papers forming the PanCancer Atlas
+[@the_cancer_genome_atlas_research_network_cancer_2013]. It aimed at deciphering the molecular profiles of 33 common
+cancer types. If you want to know more, check the [TCGA official
+page](https://www.cancer.gov/ccg/research/genome-sequencing/tcga) and the [PanCancer Atlas
+webpage](https://www.cell.com/pb-assets/consortium/pancanceratlas/pancani3/index.html).
+
+We will proceed in four steps:
+
+1. Binary Classification: Distinguish between two specific cancer types using Logistic Regression.
+
+2. Clinical Outcome Prediction: Predict patient survival (Very short vs Long term) using unregularized regression,
+   lasso-regularized regression and Random Forest.
+
+3. Multiclass Classification: Distinguish between 10 different cancer types using Multinomial Logistic Regression.
+
+4. Kaggle Challenge: Apply these techniques to a large-scale competition dataset to predict cancer tissue of origin from
+   RNA-seq profiles of metastases.
+
+## 1.3 Evaluation
+
+**IMPORTANT**: This notebook is part of your evaluation. All of the following sections contribute to the grade.
+
+- **Inclass work**: Instructions tagged "INCLASS WORK" must be completed during the session or later on at home.
+- **Questions**: Questions must be completed during the session or later on at home.
+- **Kaggle Submission**: A significant part of your grade (50%) will be based on your participation in the Kaggle
+  challenge (producing a valid submission file and your ranking/methodology).
+
+
+# 2. Get familiar with R notebooks
+
+## 2.1 What is an R notebook
+
+An  *R notebook* is an R Markdown document (*.Rmd*) with text parts and R code parts (called *chunks*) that can be
+executed independently and interactively. R notebooks can be rendered (or knit) into different formats (*.pdf*, *.html*,
+*.docx*) using a renderer.  The `rmarkdown` R package ([see doc
+here](https://cran.r-project.org/web/packages/rmarkdown/rmarkdown.pdf)) provides a lot of functions to render a
+notebook.
+
+Running `render('TP1.Rmd', html_document())` from the R console will create a
+file *TP1.html*  that you can then open with your favorite web browser.
+
+`RStudio` already provides you with commands to render your R notebook by taking into accounts the headers that are
+specified at the top of document. You can knit your notebook with the `Preview` button or by pressing `Ctrl+Shift+K` (OS
+X: `Cmd+Shift+K`).
+
+*Pratical info*: A list of all the keyboard shortcuts for `Rstudio` is available
+[here](https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts).
+
+Here is an example of YAML headers for specifying the output format.
+
+```yaml
+title: Nineteen Years Later
+author: Harry Potter
+date: July 31, 2016
+output:
+  rmarkdown::html_document:
+    theme: lumen
+```
+
+## 2.2 Execute your first **chunks**
+
+Try executing the following chunk by clicking the `Run` button within the chunk or by placing your cursor inside it and
+pressing `Ctrl+Enter` from within `R Studio`.
+
+```{r welcome}
+print("Welcome to 'Big Data et predictive models' lab session")
+```
+
+In order to create a new chunk, open it with "\`\`\`{r}" and close it with "\`\`\`". Alternatively, press `Ctrl + Alt +
+I` (OS X:` Cmd + Option + I`) or the Add Chunk button in the tool bar of `R Studio`. Chunks rendering can by customized
+by specifying chunk options among the following
+
+- `include = FALSE` prevents code and results from appearing in the finished file. R Markdown still runs the code in the
+  chunk, and the results can be used by other chunks.
+- `echo = FALSE` prevents code, but not the results from appearing in the finished file. This is a useful way to embed
+  figures.
+- `message = FALSE` prevents messages that are generated by code from appearing in the finished file.
+- `warning = FALSE` prevents warnings that are generated by code from appearing in the finished.
+- `fig.cap = "..."` adds a caption to graphical results.
+- `fig.width = 4` width of the graphical results
+- `fig.height = 3` height of the graphical results
+- `fig.align = "center"` height of the graphical results
+- `dev = "png"` the graphical device to generate plots
+- ...
+
+Options can also be set from within the chunk using the syntax `knitr::opts_chunk$set()`. For instance,
+`knitr::opts_chunk$set(fig.width = 6, fig.height = 6)` will set the figure height and width. For more details about
+chunk options, see the online documentation [https://yihui.org/knitr/options/](https://yihui.org/knitr/options/).
+
+**INCLASS WORK**: Create an `R` chunk that displays a plot of the cosinus and sinus functions on $[-\pi, \pi]$
+without showing the code, with a caption, with a width and height of 8 and 4 respectively. The plot should additionally
+be centered.
+
+
+```{r first code, eval=student_mode}
+x <- # YOUR WORK HERE. Create sequence of values between -pi and pi
+ycos <- # YOUR WORK HERE. Apply cosinus on the x values
+ysin <- # YOUR WORK HERE. Apply sinus on the x values
+
+plot(x, ycos)
+lines(x, ysin)
+```
+
+# 3. Setup
+
+## 3.1 Load Libraries
+
+```{r load libraries expression, message=FALSE, warning=FALSE}
+suppressPackageStartupMessages(library(RColorBrewer))
+suppressPackageStartupMessages(library(glmnet))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(tibble))
+suppressPackageStartupMessages(library(yarrr))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(GenomicDataCommons))
+suppressPackageStartupMessages(library(randomForest))
+suppressPackageStartupMessages(library(DT))
+suppressPackageStartupMessages(library(kableExtra))
+suppressPackageStartupMessages(library(googledrive))
+```
+
+## 3.2 Helper Functions
+
+The next chunk defines functions that will be useful throughout the notebook for manipulating data or  visualizing the
+results of your classification models. An R function may take as input one or multiple arguments that you may change
+depending on the task you want to perform.
+
+```{r useful functions expression}
+renderTable <- function(df, caption, full=F, nrows=5, extensions=c("Buttons", "Responsive"),
+                          buttons=c("copy", "csv", "excel")){
+  if (full){
+    df_render <- df
+  } else {
+    if (nrows==-1){
+      df_render <- df
+    } else {
+      df_render <- utils::head(df, nrows)
+    }
+  }
+
+  DT::datatable(data=df_render,
+                caption=htmltools::tags$caption(style='caption-side: top; text-align: center; color:black;
+                                                font-size:150%;',
+                                                caption),
+                extensions=extensions,
+                options=list(dom="Bfrtip", buttons=buttons,
+                             initComplete = htmlwidgets::JS(
+                               "function(settings, json) {",
+                               "$(this.api().table().container()).css({'font-size': '10pt'});",
+                               "}")
+                             )
+  )
+}
+
+convertListToDf <- function(result, sep="|"){
+  stopifnot(is.list(result))
+  lresults <- list()
+  for (col_name in names(result)){
+    col_values <- result[[col_name]]
+    if (is.list(col_values)){
+      col_values <- sapply(col_values, function(x) paste(x, collapse=sep))
+    }
+    lresults[[col_name]] <- col_values
+  }
+
+  data.frame(lresults)
+}
+
+getColors <- function(vec, pal="Dark2", alpha=0.7){
+  colors <- list()
+
+  palette_predefined <- read.csv("../data/colors.csv") # Ensure file exists or comment out
+  # Fallback
+  if(!exists("palette_predefined")) {
+      palette_predefined <- data.frame(Name=c(), Color=c())
+  } else {
+      palette_predefined <- setNames(palette_predefined$Color, palette_predefined$Name)
+  }
+
+  palette_default <- brewer.pal(max(length(unique(vec)),3), pal)
+  i <- 1
+  for (v in unique(vec)){
+    if (toupper(v) %in% names(palette_predefined)){
+      colors[[v]] <- adjustcolor(palette_predefined[[toupper(v)]], alpha)
+    } else {
+      colors[[v]] <- adjustcolor(palette_default[[i]], alpha)
+      i <- i+1
+      if(i > length(palette_default)) i <- 1
+    }
+  }
+  colors
+}
+
+getConfusionMatrix <- function(labelsPredicted, labelsCorrect, labels=NULL){
+  if (is.null(labels)){
+    labels <- unique(union(labelsPredicted, labelsCorrect))
+  } else {
+    labels <- unique(labels)
+  }
+  confMat <- data.frame(row.names=labels)
+  for (labelPredicted in labels){
+    for (labelCorrect in labels){
+      confMat[labelPredicted, labelCorrect] <- sum(labelsPredicted==labelPredicted & labelsCorrect==labelCorrect)
+    }
+  }
+  confMat
+}
+
+plot_coefs_logistic_regression <- function(nCoeffsPlot=20, CoeffsA, CoeffsB, colorA, colorB){
+  ymax <- max(abs(CoeffsA)[1], abs(CoeffsB)[1])
+  if(is.na(ymax) || ymax == 0) ymax <- 1
+
+  # Avoid log10(0) error
+  if(ymax > 0) {
+      ymax <- ceiling(ymax/10**(round(log10(ymax))))*10**(round(log10(ymax)))
+  }
+
+  xx <- barplot(height=c(CoeffsA[1:nCoeffsPlot], CoeffsB[1:nCoeffsPlot]),
+                col=c(rep(colorA, nCoeffsPlot), rep(colorB, nCoeffsPlot)),
+                cex.names=0.7, las=2, ylim=c(-ymax, ymax))
+
+  text(xx[1:nCoeffsPlot]+1,
+       y=-1,
+       label=rownames(CoeffsA)[1:nCoeffsPlot],
+       pos=2,
+       cex=0.7,
+       srt=90)
+
+  text(xx[(nCoeffsPlot+1):(2*nCoeffsPlot)]-0.75,
+       y=1,
+       label=rownames(CoeffsB)[1:nCoeffsPlot],
+       pos=4,
+       cex=0.7,
+       srt=90)
+}
+
+
+plot_coefs_multinomial_regression <- function(coef_matrix, mar=c(0, 3, 2, 0), oma=c(2, 2, 2, 2), cex.names=0.4) {
+  # Prepare for plotting
+  classes <- colnames(coef_matrix)
+  covariates <- rownames(coef_matrix)
+  n_classes <- ncol(coef_matrix)
+
+  # Calculate global range if you want all plots to have the same scale (Optional but recommended)
+  # global_lim <- range(coef_matrix)
+
+  # Setup layout
+  par(mfrow = c(1, n_classes), mar = mar, oma = oma)
+
+  for (i in 1:n_classes) {
+    bar_values <- coef_matrix[, i]
+
+    # 1. Create a color vector: Blue for positive, Red for negative
+    bar_cols <- ifelse(bar_values > 0, "blue", "red")
+
+    # 2. Single Barplot Call
+    # We turn off the default axis (axes=FALSE) to prevent the "messy text"
+    bp <- barplot(
+      bar_values,
+      horiz = TRUE,
+      xlim = c(min(bar_values), max(bar_values)), # Use global_lim here if you want comparable scales
+      names.arg = covariates,
+      axisnames = FALSE,
+      las = 2,
+      col = bar_cols,    # Apply the conditional colors
+      main = classes[i],
+      cex.main = 1.2,
+      space = 0.2,
+      width = 0.8,
+      border = NA,
+      axes = FALSE       # Turn OFF default axes to fix the overlap issue
+    )
+
+    # 2. FORCE LABELS using text()
+    # x = par("usr")[1] gets the exact left edge of the plot area
+    # pos = 2 means "to the left" of that coordinate
+    # xpd = TRUE allows drawing outside the plot region (into the margin)
+    text(
+      x = par("usr")[1],
+      y = bp,
+      labels = covariates,
+      pos = 2,
+      xpd = TRUE,
+      cex = cex.names,
+      offset = 0.1   # Distance from the axis line
+    )
+
+    # 3. Add Custom X-Axis
+    # This draws a clean axis at the bottom (side=1) with horizontal numbers (las=1)
+    axis(side = 1, cex.axis = 0.6, lwd = 0.5, las = 1)
+
+    # Add vertical line at 0
+    abline(v = 0, col = "black", lwd = 0.5, lty = 1)
+  }
+}
+```
+
+# 4. Binary Classification
+
+We will start by distinguishing between two specific tumor types using the Cancer Gene Census (CGC) genes.
+
+### 4.1 Data Loading
+
+For the purpose of this notebook, we have defined a function that will load the data you need from a list of genes and
+cancer types. The processed data comes from Genomic Data Commons, a reference initiative which provides in harmonized
+format the clincal and molecular data from many cancer programmes including TCGA, and MSKCC'c cBioportal, a reference
+website widely used for the exploration and downloading of data used in research papers.
+
+The following chunk shows how to interact with GenomicDataCommons server via the GenomicDataCommons R package and then
+loads the details of the cancer projects included in TCGA.
+
+```{r interact with GDC}
+# check that GDC server is up and running
+status <- GenomicDataCommons::status()
+for (name in names(status)){
+  cat(paste0(name, ": ", status[[name]]), "\n")
+}
+stopifnot(status$status=="OK")
+
+# check available programs in GDC
+# it of course includes TCGA
+print(available_values("projects", "program.name"))
+
+# Check projects associated to TCGA program
+list_projects <- projects() %>%
+  filter(program.name=='TCGA') %>%
+  results_all()
+
+df_projects <- convertListToDf(list_projects)
+```
+
+Here is the dataframe with projects data for TCGA.
+
+<div style = "width:100%; height:auto; margin: auto;">
+```{r render df_projects, echo=FALSE}
+renderTable(df_projects, caption="TCGA - projects", nrows=-1)
+```
+</div>
+
+For the binary classification task, we will focus on only two cancer types.
+
+```{r cancer types of interest}
+# DEFINE YOUR CANCER TYPES HERE
+cancer_type_1 <- "BLCA" # Bladder Urothelial Carcinoma
+cancer_type_2 <- "LUSC" # Lung Squamous Cell Carcinoma
+```
+
+
+```{r download data}
+# 1. Setup and Authentication
+drive_deauth() # Use public access
+data_url <- "https://drive.google.com/drive/folders/1vfL_a9Bk4rkp0tmnA3aK-ZLsBwqY65W8?usp=drive_link"
+output_dir <- "../data"
+
+# Ensure output directory exists
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
+# 2. Define the files you want to download
+# (You can just list the filenames if they are the same on Drive and locally)
+files_to_sync <- c(
+  "tcga_tpm_cgc_genes.rds",
+  "colors.csv",
+  "CancerGeneCensusCOSMIC_20240117.csv",
+  "X_test_genes.csv.gz"
+)
+
+# 3. Get the list of ALL files in the Drive folder once
+# This is more efficient than searching for each file individually
+message("Fetching folder contents from Google Drive...")
+drive_contents <- drive_ls(path = as_id(data_url))
+
+# 4. Iterate through your list and download if missing locally
+for (filename in files_to_sync) {
+
+  # Construct local path
+  local_path <- file.path(output_dir, filename)
+
+  if (!file.exists(local_path)) {
+    message(paste("Local file missing. Searching for:", filename))
+
+    # Find the specific file entry in the drive contents we fetched earlier
+    # We look for an exact name match
+    target_entry <- drive_contents[drive_contents$name == filename, ]
+
+    if (nrow(target_entry) == 0) {
+      warning(paste("File not found on Google Drive:", filename))
+    } else {
+      # Download using the ID found in the entry
+      drive_download(as_id(target_entry$id), path = local_path, overwrite = TRUE)
+    }
+
+  } else {
+    message(paste("File already exists locally:", filename))
+  }
+}
+```
+
+**INCLASS WORK**: Load the list of genes from the cancer gene census file `../data/CancerGeneCensusCOSMIC_20240117.csv`
+using `read.csv` and then load the TCGA data (expression and clinical data) by loading the tcga_tpm_cgc_genes.RDS object
+using `readRDS`. Then intersect the list of patients from `TcgaDataAll$CLINIC` and `TcgaDataAll$EXP` tables to ensure alignment
+between tables.
+
+```{r load tcga expression data, eval=student_mode}
+CgcTable <- # YOUR WORK HERE
+CgcGenes <- # YOUR WORK HERE
+TcgaDataAll <- # YOUR WORK HERE
+
+# Transpose to have patients in rows
+TcgaDataAll$EXP <- t(TcgaDataAll$EXP)
+
+# Intersect patients
+patients_common <- # YOUR WORK HERE
+TcgaDataAll$CLINIC <- TcgaDataAll$CLINIC[patients_common,]
+TcgaDataAll$EXP <- TcgaDataAll$EXP[patients_common,]
+
+cat(sprintf("Number of patients with both Clinical and Expression data: %d\n", length(patients_common)))
+
+# Filter types
+type_mask <- TcgaDataAll$CLINIC$Project_TCGA %in% c(cancer_type_1, cancer_type_2)
+TcgaDataBin <- list()
+TcgaDataBin$CLINIC <- TcgaDataAll$CLINIC[type_mask,]
+TcgaDataBin$EXP <- TcgaDataAll$EXP[type_mask,]
+
+# Make factor
+TcgaDataBin$CLINIC$Project_TCGA <- factor(TcgaDataBin$CLINIC$Project_TCGA, levels=c(cancer_type_1, cancer_type_2))
+
+# Calculate counts in the filtered dataset
+count_type_1 <- sum(TcgaDataBin$CLINIC$Project_TCGA == cancer_type_1)
+count_type_2 <- sum(TcgaDataBin$CLINIC$Project_TCGA == cancer_type_2)
+
+cat(sprintf("Selected %d patients for type %s\n", count_type_1, cancer_type_1))
+cat(sprintf("Selected %d patients for type %s\n", count_type_2, cancer_type_2))
+cat(sprintf("Total patients selected: %d\n", nrow(TcgaDataBin$CLINIC)))
+```
+
+**QUESTION 1)** The expression data provided is in TPM (Transcripts Per Million). In the Kaggle challenge, you will also be
+given TPM data. Why is TPM preferred over raw counts for comparing expression between samples? Why might TPM be
+problematic if we want to compare expression between genes within the same sample?
+
+&nbsp;
+
+**ANSWER**:
+
+## 4.2 Visualization (PCA)
+
+A popular way of visualising high-dimensional data is first by reducing its dimension and then visualise it into
+the lower-dimensional representation. The **Principal Component Analysis** with $k$ components allows you to find the
+$k$ dimensional subspace that retains the most of the variance of the data in the original space. PCA of $\mathbf{X}$
+may be performed by performing **Singular Value Decomposition** on the centered matrix.
+
+```{r compute PCA two cancer types, eval=complete_mode}
+colorsStudy <- getColors(TcgaDataBin$CLINIC$Project_TCGA, alpha=1)
+
+X <- t(t(TcgaDataBin$EXP) - rowMeans(t(TcgaDataBin$EXP)))
+resSVD <- svd(X, nu=2, nv=2)
+scores <- resSVD$u %*% diag(resSVD$d[1:2])
+
+plot(scores[,1], scores[,2],
+     col=unlist(colorsStudy[TcgaDataBin$CLINIC$Project_TCGA]),
+     pch=16, main='PCA: Binary Classification',
+     xlab=paste("PC1 (",round(resSVD$d[1]^2/sum(resSVD$d^2)*100,2),"%)",sep=""),
+     ylab=paste("PC2 (",round(resSVD$d[2]^2/sum(resSVD$d^2)*100,2),"%)",sep=""))
+legend("bottomright", legend=unique(TcgaDataBin$CLINIC$Project_TCGA), pch=16,
+       col=unlist(colorsStudy[unique(TcgaDataBin$CLINIC$Project_TCGA)]))
+```
+
+
+## 4.3 Logistic Regression
+
+### Train/test split
+
+We would like to have a model to identify the study of origin of the RNA samples from their gene expression. We shall
+continue to rely on the gene expression of only the Cancer Gene Census. In here we are going to fit a `logistic
+regression` model that we saw this morning to perform this classification task.
+
+To begin with, we shall split the data into a training set and a test set.
+
+```{r split train/test, eval=complete_mode}
+# split total list of rows betweeen data between train and test row lists
+totalIndex <- row.names(TcgaDataBin$CLINIC)
+totalSize <- length(totalIndex)
+trainProp <- 0.8
+trainIndex <- sample(totalIndex, size=round(totalSize*trainProp))
+testIndex <- totalIndex[!totalIndex %in% trainIndex]
+
+
+cat(paste("Training size:", length(trainIndex), "\nTest size:", length(testIndex)), "\n")
+```
+
+**QUESTION 2)** Why is it important to split the data into a training set and a test set?
+
+&nbsp;
+
+**ANSWER**:
+
+### Fit the model.
+
+The [glmnet](https://cran.r-project.org/web/packages/glmnet/glmnet.pdf) R package is a great tool for fitting all
+kinds of linear models. GLM stands for for **Generalized Linear Models** which a global family of models that encompass
+many linear models including the linear regression (for continuous predictions), logistic regression (for class
+predictions), Poisson regression (for count data), Gamma regression (log normal data), etc. **Logistic
+regression** is GLM from the **binomial family** of distributions with a **logit link**.
+
+
+**INCLASS WORK** Use the [glmnet](https://cran.r-project.org/web/packages/glmnet/glmnet.pdf) R package to fit a logistic
+regression model on the expression data to predict the study membership of RNA samples. Use alpha=0 and lambda=0 for unregularized model.
+
+
+```{r fit glmnet no reg, eval=student_mode}
+# YOUR WORK HERE
+```
+
+### Assess the model
+
+We define the function below to assess a model predictive performance.
+
+```{r assess_model_on_train_and_test function}
+assess_model_on_train_and_test <- function(yTrainPred, yTestPred, yTrain, yTest, caption="Confusion matrices"){
+  # Ensure all are character vectors to prevent factor level mismatches
+  yTrain <- as.character(yTrain)
+  yTest  <- as.character(yTest)
+  yTrainPred <- as.character(yTrainPred)
+  yTestPred  <- as.character(yTestPred)
+
+  # get accuracies
+  accuracyTrain <- round(mean(yTrainPred==yTrain),3)
+  accuracyTest <- round(mean(yTestPred==yTest),3)
+  cat(paste("Training accuracy:", accuracyTrain, "\nTest accuracy:", accuracyTest, "\n"))
+
+  # get confusion matrices
+  confMatTrain <- getConfusionMatrix(yTrainPred, yTrain)
+  confMatTest <- getConfusionMatrix(yTestPred, yTest)
+
+  # display confusion matrices
+  kTrain <- kable(confMatTrain, caption="Train")
+  kTest <- kable(confMatTest, caption="Test")
+  kables(list(kTrain, kTest), format="html", caption=caption)
+}
+```
+
+
+
+**INCLASS WORK** Fill the function `predict` and then apply it to the model we just trained. Use the `predict` function
+to get the predictions your model on *both* the train and test data. Use the predictions to compare against the true
+values of the tumor type available in `TcgaDataBin$CLINIC$study` vector. Use the `getConfusionMatrix` to quantify the
+quality of the model by computing the [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix). You may also
+quantify the quality of your model using metrics you mentioned in your previous answer.
+
+*Hint*: You will need to use the `as.matrix` function to provide matrices to the `newx` argument of predict and to
+arguments `labelsCorrect` and `labelsPredict` of `getConfusionMatrix`. You may check beforehand if your variable is
+a matrix by running `is.matrix(your_variable)`. To retain the row names when extracting the vector of correct labels,
+use the syntax `as.matrix(your_dataframe)[your_index_selection,"your_column_name"]`
+
+```{r assess reg cancer type model, eval=student_mode}
+yTrainPred <- # YOUR WORK HERE
+yTestPred <- # YOUR WORK HERE
+
+assess_model_on_train_and_test(
+  yTrainPred=yTrainPred,
+  yTestPred=yTestPred,
+  yTrain=# YOUR WORK HERE,
+  yTest=# YOUR WORK HERE,
+  caption=paste("Logistic regression model", cancer_type_1, "vs", cancer_type_2)
+)
+```
+
+We hereafter look at the coefficients learned my the model
+
+```{r coefs reg cancer type model, eval=complete_mode}
+# extract coefficients and remove the intercept
+fitRegCoefs <- as.matrix(coefficients(fitReg))
+fitRegCoefs <- fitRegCoefs[!grepl("(Intercept)", rownames(fitRegCoefs)),,drop=F]
+
+# select coefficients predicting towards Early stage and sort them
+RegGenes1 <- fitRegCoefs[fitRegCoefs < 0,,drop=F]
+RegGenes1 <- RegGenes1[order(abs(RegGenes1), decreasing=T),,drop=F]
+
+# select coefficients predicting towards Late stage and sort them
+RegGenes2 <- fitRegCoefs[fitRegCoefs > 0,,drop=F]
+RegGenes2 <- RegGenes2[order(abs(RegGenes2), decreasing=T),,drop=F]
+
+plot_coefs_logistic_regression(nCoeffsPlot=20, CoeffsA=RegGenes1, CoeffsB=RegGenes2,
+                               colorA=colorsStudy[[cancer_type_1]], colorB=colorsStudy[[cancer_type_2]])
+```
+
+
+
+# 5. Clinical Outcome Prediction (Survival)
+
+Instead of predicting the tumor type (which is relatively easy), we will try a harder task: Predicting Survival for
+patients with `r cancer_type_1`. We will compare two models: Regularized Logistic Regression (Lasso) and Random Forest.
+
+## 5.1 Define Survival Labels
+
+**INCLASS WORK**: Create a binary variable `Survival_Label`.
+
+- Poor: `OS_Time < 365` AND `OS == 1` (Dead).
+- Good: `OS_Time < 365*5` (Alive or Dead after 5 years).
+
+Drop intermediate/censored patients.
+
+
+```{r create survival_label, eval=student_mode}
+# Filter for cancer type
+clinic_sub <- TcgaData$CLINIC[TcgaData$CLINIC$Project_TCGA == cancer_type_1, ]
+# Ensure expression data matches the subset rows
+exp_sub <- TcgaData$EXP[rownames(clinic_sub), ]
+
+# Create Survival Labels
+clinic_sub$Survival_Label <- # YOUR WORK HERE
+clinic_sub$Survival_Label <- as.factor(clinic_sub$Survival_Label)
+
+# Remove NAs
+clean_mask <- !is.na(clinic_sub$Survival_Label)
+clinic_final <- clinic_sub[clean_mask, ]
+exp_final <- exp_sub[clean_mask, ]
+
+# Log Transform (Crucial for RNA-seq)
+# Apply log2(x+1) function
+exp_final_log <- # YOUR WORK HERE
+
+# Save into list
+TcgaDataSurv <- list(CLINIC = clinic_final, EXP = exp_final_log)
+
+print(table(TcgaDataSurv$CLINIC$Survival_Label))
+```
+
+**QUESTION 3)** We deliberately removed patients who died between 1 and 5 years. How does this simplify the problem? If
+you deployed this in a hospital, what happens for a patient who lives 2 years?
+
+&nbsp;
+
+**ANSWER**:
+
+## 5.2 Regression vs Random Forest
+
+**INCLASS WORK**:
+
+- Split into Train/Test.
+
+- Train Standard Logistic Regression (cv.glmnet, alpha=0, lambda=0).
+
+- Train Lasso Logistic Regression (cv.glmnet, alpha=1).
+
+- Train Random Forest (randomForest).
+
+- Compare accuracies on train and test sets.
+
+
+```{r train survival label models, eval=student_mode}
+# --- SPLIT TRAIN / TEST ---
+
+# Get all row names
+totalIndex <- row.names(TcgaDataSurv$CLINIC)
+totalSize <- length(totalIndex)
+
+set.seed(123) # Make it reproducible
+trainProp <- 0.8
+trainIndex <- sample(totalIndex, size = round(totalSize * trainProp))
+
+# Create Test Index (everything not in train)
+testIndex <- setdiff(totalIndex, trainIndex)
+
+cat(paste("Training size:", length(trainIndex), "\nTest size:", length(testIndex)), "\n")
+
+# --- RUN MODELS ---
+
+# Model A: Standard Logistic (Warning: likely to fail if genes > patients)
+fitReg <- # YOUR WORK HERE
+
+# Model B: Lasso (Regularized)
+fitLasso <- # YOUR WORK HERE
+
+# Model C: Random Forest
+fitRF <- # YOUR WORK HERE
+```
+
+Now we get predictions on the train and test sets and compute performances.
+
+**Note on `predict()` Syntax:**
+Pay close attention to the arguments inside the `predict()` function, as they differ depending on the package used:
+
+* **For `glmnet` objects (Lasso/Ridge):**
+    * **Data argument:** Uses `newx` (requires a **matrix**, not a data frame).
+    * **Hyperparameter:** Requires `s` (e.g., `s="lambda.min"`) to specify which lambda value to use for the prediction.
+* **For `randomForest` (and standard `glm`) objects:**
+    * **Data argument:** Uses `newdata` (can often accept data frames or matrices).
+    * **Hyperparameter:** Does not typically require a hyperparameter at the prediction stage.
+
+
+
+```{r assess survival labels models, eval=student_mode}
+# Model A: Standard Logistic (Warning: likely to fail if genes > patients)
+assess_model_on_train_and_test(
+  yTrainPred=#### YOUR WORK HERE,
+  yTestPred=#### YOUR WORK HERE,
+  yTrain=TcgaDataSurv$CLINIC[trainIndex,"Survival_Label"],
+  yTest=TcgaDataSurv$CLINIC[testIndex,"Survival_Label"],
+  caption=paste("Standard Logistic regression model Survival Label")
+)
+
+# Model B: Lasso (Regularized)
+assess_model_on_train_and_test(
+  yTrainPred=#### YOUR WORK HERE,
+  yTestPred=#### YOUR WORK HERE,
+  yTrain=TcgaDataSurv$CLINIC[trainIndex,"Survival_Label"],
+  yTest=TcgaDataSurv$CLINIC[testIndex,"Survival_Label"],
+  caption=paste("Lasso Logistic regression model Survival Label")
+)
+
+
+# Model C: Random Forest
+assess_model_on_train_and_test(
+  yTrainPred=#### YOUR WORK HERE,
+  yTestPred=#### YOUR WORK HERE,
+  yTrain=TcgaDataSurv$CLINIC[trainIndex,"Survival_Label"],
+  yTest=TcgaDataSurv$CLINIC[testIndex,"Survival_Label"],
+  caption=paste("Random forest model Survival Label")
+)
+```
+
+
+**QUESTION 4)** Compare standard logistic regression, lasso logistic regression, and Random Forest results.
+
+  1. Propose a random model for the task.
+  2. Is any model performing better than random?
+  3. If the performances of the Lasso and Random Forest models were similar, and if Lasso selects only 5 genes and RF
+     uses all of them, which is more useful for a clinician looking for a biomarker?
+
+&nbsp;
+
+**ANSWER**:
+
+
+# 6. The Kaggle Challenge & Baseline Model
+
+## 6.1 Challenge Overview
+
+**Goal:** Predict Cancer Type (33 classes).
+
+**Context:**
+
+* **Training Data:** Primary Tumors (TCGA).
+* **Test Data:** Metastases (Cancer of Unknown Primary context).
+* **Features:** ~56,000 genes (Transcripts Per Million - TPM).
+
+### The Biological Challenge
+
+The aim is to predict the cancer type from an expression profile.  If we can achieve this accurately, then we will be
+able to better manage and treat cancers of unknown primary. A core difficulty however lies in the difference between
+training and testing datasets. The training set consists of **Primary Tumors**, but the test set consists of **Metastases**.
+
+**QUESTION 5)** How might this affect model performance? Name one biological reason why a gene highly expressed in
+a primary breast cancer might NOT be expressed in a breast cancer metastasis found in the lung.
+
+&nbsp;
+
+**ANSWER:**
+
+## 6.2 Building a Baseline: Multiclass Classification
+
+To create a baseline submission for this challenge, we will first practice on a subset of the data. We will train a **Multinomial Logistic Regression** model on 10 specific tumor types.
+
+### Data Loading & Preprocessing
+We load the dataset, intersect patient IDs between clinical and expression data, and clean missing values.
+
+```{r load data and filter, eval=complete_mode}
+# Filter types
+cancer_types <- c("BLCA", "BRCA", "HNSC", "LGG", "LUAD", "OV", "PRAD", "SKCM", "THCA", "UCEC")
+type_mask <- TcgaDataAll$CLINIC$Project_TCGA %in% cancer_types
+TcgaData10 <- list()
+TcgaData10$CLINIC <- TcgaDataAll$CLINIC[type_mask,]
+TcgaData10$EXP <- TcgaDataAll$EXP[type_mask,]
+```
+
+### Train/Test Split & Model Training
+
+**INCLASS WORK**: Split the data (80% train, 20% test) and train a cv.glmnet with `family=multinomial` and assess its
+performance.
+
+```{r train/test and regression training tcga10, eval=student_mode}
+# Split Data
+idx10 <- rownames(TcgaData10$CLINIC)
+train10 <- sample(idx10, size=round(length(idx10)*0.8))
+test10 <- setdiff(idx10, train10)
+
+# Fit Multinomial Logistic Regression
+fit10Cv <- # YOUR WORK HERE
+
+assess_model_on_train_and_test(
+  yTrainPred=# YOUR WORK HERE
+  yTestPred=# YOUR WORK HERE
+  yTrain=TcgaData10$CLINIC[train10,"Project_TCGA"],
+  yTest=TcgaData10$CLINIC[test10,"Project_TCGA"],
+  caption=paste("Multinomial lasso logistic regression")
+)
+```
+
+Below we look at the models coefficients
+
+
+```{r regression coeffs tcga10, fig.cap="Non-zero predictors 10-class classifier", fig.height=18, fig.width=8, fig.align="center", dpi=600, eval=complete_mode}
+coefficients <- coef(fit10Cv, s = "lambda.min")
+class_names <- names(coefficients)
+covariate_names <- rownames(coefficients[[1]])
+coef_matrix <- do.call(cbind, lapply(coefficients, as.matrix))
+rownames(coef_matrix) <- covariate_names
+colnames(coef_matrix) <- class_names
+
+# Filter non-zero
+non_zero_covariates <- row.names(coef_matrix)[rowSums(coef_matrix != 0) > 0]
+non_zero_covariates <- sort(setdiff(non_zero_covariates, "(Intercept)"))
+coef_matrix_non_zero <- coef_matrix[non_zero_covariates, ]
+
+plot_coefs_multinomial_regression(coef_matrix_non_zero, cex.names=0.4)
+```
+
+## 6.3 Generating the Kaggle Submission
+
+**INCLASS WORK**: Use your trained model to predict on the official Kaggle Test data. Note: You must align the features
+(genes) and reproduce any feature preprocessing or engineering done on the Kaggle test set to match exactly the
+variables used in your model.
+
+
+```{r prepare kaggle submission, eval=student_mode}
+# 1. Load Kaggle Data
+# WARNING: the test matrix is provided in genes x samples format, unlike previous expression tables
+X_test <- read.csv("../data/X_test_genes.csv.gz", check.names=F)
+
+# 2. Align Features
+genes_model <- colnames(TcgaData10$EXP) # The genes your model knows
+gene_mask <- X_test$gene_name %in% genes_model
+X_test_subset <- X_test[gene_mask,]
+
+# 3. Transpose
+rownames(X_test_subset) <- X_test_subset$gene_name
+X_test_subset$gene_name <- NULL
+X_test_subset <- t(X_test_subset)
+X_test_subset <- X_test_subset[, genes_model]
+
+# 3. Predict
+preds <- # YOUR WORK HERE
+
+# 4. Save
+submission <- data.frame(Sample_Id = rownames(X_test_subset), Cancer_Type = as.vector(preds))
+write.csv(submission, "submission.csv", row.names=FALSE, quote=FALSE)
+```
+
+You may submit the file `submission.csv` to Kaggle by clicking the "Submit Prediction" from your competition page.
+
+
+## 6.4 Kaggle home work
+
+### Assignment Requirements
+For the final homework of this module, you are expected to participate in the Kaggle challenge. Your goal is not solely
+to achieve the highest score, but to demonstrate a rigorous scientific approach to model building and improvement.
+
+**Minimum requirements:**
+
+1.  **Two Model Types:** You must implement and compare at least two distinct types of modeling algorithms (e.g.,
+    Elastic Net vs. Random Forest, SVM vs. Neural Network, etc.).
+2.  **Feature Engineering/Selection:** You must attempt at least one specific strategy for variable selection or feature
+    engineering. This can be:
+    * **Data-driven:** e.g., PCA, Variance thresholding, recursive feature elimination.
+    * **Expert/Knowledge-driven:** e.g., selecting specific pathways, removing housekeeping genes, or using gene
+      signatures found in literature.
+
+### Evaluation Criteria
+
+I will value **meaningful and well-documented attempts** regardless of the final leaderboard
+position. A well-reasoned failure is more valuable than a lucky black box.
+
+**Bonus Points/High Value:**
+
+* Works that attempt to incorporate the **biopsy site** (metastasis location) as a feature or constraint.
+* Integration of knowledge extracted from external **literature or biological databases**.
+* Advanced strategies such as **Hierarchical Modelling** (e.g., predicting the broad tissue type or
+  biologically/clinicaly-close groups of cancer types before refining to the specific subtype).
+* **Ensemble methods** or combinations of multiple models.
+
+### Submission Format
+
+Please provide a separate output containing your code and documentation. The following formats are accepted:
+
+* R Script (`.R`)
+* Python Script (`.py`)
+* R Markdown (`.Rmd`)
+* Quarto Markdown (`.qmd`)
+* Jupyter Notebook (`.ipynb` with R or Python kernel)
+
+### Documentation Standards
+
+Regardless of the file format, I expect high standards of code clarity:
+
+* **Clear Naming:** Use descriptive names for variables and functions.
+* **Step Descriptions:** Use comments or text cells to describe the *idea* behind each step, not just the code itself.
+* **Final Summary:** You must include a summary text section at the end of your document. This should clearly synthesize:
+    * The different approaches you explored.
+    * The corresponding performance (leaderboard score or internal CV score) for each approach.
+    * Your interpretation of why certain methods worked better than others.
+
+
+# End
+
+In this workshop you have used various types of machine learning models to solve binary or multiclass classification
+tasks. We have addressed the challenge of modeling high dimension data (gene expression) to predict clinically relevant
+observations.
+
+I hope you have gained experience on the good practices in machine learning and the main residing challenges. Maybe
+these scripts can be useful for your current or future research, do not hesitate to use it.
+
+Thank you!
+
+`r if (knitr::is_html_output()) '# References {-}'`

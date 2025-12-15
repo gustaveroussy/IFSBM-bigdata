@@ -7,9 +7,9 @@ if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
 # --- 3. Define Package Lists ---
-bioc_pkgs <- c("maftools", "BSgenome", "BSgenome.Hsapiens.UCSC.hg19", "MutationalPatterns")
-cran_pkgs <- c("rmarkdown", "RColorBrewer", "glmnet", "dplyr", "tidyr",
-               "yarrr", "knitr", "randomForest", "ICAMS")
+bioc_pkgs <- c("maftools", "BSgenome", "BSgenome.Hsapiens.UCSC.hg19", "MutationalPatterns", "GenomicDataCommons")
+cran_pkgs <- c("rmarkdown", "RColorBrewer", "glmnet", "dplyr", "tidyr", "DT", "kableExtra",
+               "yarrr", "knitr", "randomForest", "ICAMS", "googledrive")
 
 # --- 4. Install Missing Packages in Bulk ---
 

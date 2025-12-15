@@ -33,6 +33,7 @@ dependencies:
   # --- Visualization ---
   - r-ggplot2
   - r-rcolorbrewer
+  - r-kableextra
   - r-yarrr
 
   # --- Statistics & Analysis ---

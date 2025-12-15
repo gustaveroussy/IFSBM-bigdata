@@ -1,0 +1,48 @@
+name: r_tp
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  # --- System & Compilers ---
+  - compilers
+  - gfortran
+  - make
+  - pkg-config
+
+  # --- R Base & Installers ---
+  - r-base
+  - r-argparse
+  - r-bh
+  - r-remotes
+  - r-biocmanager
+  - r-irkernel
+  - r-rmarkdown
+  - r-knitr
+  - r-htmltools
+  - r-htmlwidgets
+
+  # --- Tidyverse & Data Manipulation ---
+  - r-dplyr
+  - r-readr
+  - r-tibble
+  - r-tidyr
+  - r-stringr
+  - r-dt
+
+  # --- Visualization ---
+  - r-ggplot2
+  - r-rcolorbrewer
+
+  # --- Statistics & Analysis ---
+  - r-randomforest
+  - r-glmnet
+  - r-survival
+
+  # --- Bioconductor Dependencies ---
+  - bioconda::bioconductor-biobase
+  - bioconda::bioconductor-biocgenerics
+  - bioconda::bioconductor-biostrings
+  - bioconda::bioconductor-s4vectors
+  - bioconda::bioconductor-bsgenome.hsapiens.ucsc.hg19
+  - bioconductor-genomicdatacommons

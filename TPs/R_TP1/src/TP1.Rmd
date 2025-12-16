@@ -170,6 +170,13 @@ suppressPackageStartupMessages(library(kableExtra))
 suppressPackageStartupMessages(library(googledrive))
 ```
 
+Let us load in-house functions for visualizing and downloading data.
+
+```{r useful functions from files}
+source("../../lib/RenderTable.R")
+source("../../lib/DownloadFromGoogleDrive.R")
+```
+
 ## 3.2 Helper Functions
 
 The next chunk defines functions that will be useful throughout the notebook for manipulating data or  visualizing the
@@ -217,10 +224,18 @@ convertListToDf <- function(result, sep="|"){
   data.frame(lresults)
 }
 
-getColors <- function(vec, pal="Dark2", alpha=0.7){
+
+getColors <- function(vec, pal="Dark2", alpha=0.7, filename=NULL){
   colors <- list()
 
-  palette_predefined <- read.csv("../data/colors.csv") # Ensure file exists or comment out
+  if (!is.null(filename)){
+    if (grepl(".csv", filename)){
+      palette_predefined <- read.csv(paste0("../data/", filename))
+    } else if (grepl(".tsv", filename)){
+      palette_predefined <- read.delim(paste0("../data/", filename), sep="\t")
+    }
+  }
+
   # Fallback
   if(!exists("palette_predefined")) {
       palette_predefined <- data.frame(Name=c(), Color=c())
@@ -398,55 +413,18 @@ cancer_type_2 <- "LUSC" # Lung Squamous Cell Carcinoma
 
 
 ```{r download data}
-# 1. Setup and Authentication
-drive_deauth() # Use public access
-data_url <- "https://drive.google.com/drive/folders/1vfL_a9Bk4rkp0tmnA3aK-ZLsBwqY65W8?usp=drive_link"
-output_dir <- "../data"
-
-# Ensure output directory exists
-if (!dir.exists(output_dir)) {
-  dir.create(output_dir, recursive = TRUE)
-}
-
-# 2. Define the files you want to download
-# (You can just list the filenames if they are the same on Drive and locally)
-files_to_sync <- c(
-  "tcga_tpm_cgc_genes.rds",
-  "colors.csv",
-  "CancerGeneCensusCOSMIC_20240117.csv",
-  "X_test_genes.csv.gz"
+DownloadFromGoogleDrive(
+  data_url="https://drive.google.com/drive/folders/1vfL_a9Bk4rkp0tmnA3aK-ZLsBwqY65W8?usp=drive_link",
+  output_dir = "../data",
+  files_to_sync = c(
+    "tcga_tpm_cgc_genes.rds",
+    "colors_cancer_type.csv",
+    "CancerGeneCensusCOSMIC_20240117.csv",
+    "X_test_genes.csv.gz"
+  )
 )
-
-# 3. Get the list of ALL files in the Drive folder once
-# This is more efficient than searching for each file individually
-message("Fetching folder contents from Google Drive...")
-drive_contents <- drive_ls(path = as_id(data_url))
-
-# 4. Iterate through your list and download if missing locally
-for (filename in files_to_sync) {
-
-  # Construct local path
-  local_path <- file.path(output_dir, filename)
-
-  if (!file.exists(local_path)) {
-    message(paste("Local file missing. Searching for:", filename))
-
-    # Find the specific file entry in the drive contents we fetched earlier
-    # We look for an exact name match
-    target_entry <- drive_contents[drive_contents$name == filename, ]
-
-    if (nrow(target_entry) == 0) {
-      warning(paste("File not found on Google Drive:", filename))
-    } else {
-      # Download using the ID found in the entry
-      drive_download(as_id(target_entry$id), path = local_path, overwrite = TRUE)
-    }
-
-  } else {
-    message(paste("File already exists locally:", filename))
-  }
-}
 ```
+
 
 **INCLASS WORK**: Load the list of genes from the cancer gene census file `../data/CancerGeneCensusCOSMIC_20240117.csv`
 using `read.csv` and then load the TCGA data (expression and clinical data) by loading the tcga_tpm_cgc_genes.RDS object
@@ -502,7 +480,7 @@ $k$ dimensional subspace that retains the most of the variance of the data in th
 may be performed by performing **Singular Value Decomposition** on the centered matrix.
 
 ```{r compute PCA two cancer types, eval=complete_mode}
-colorsStudy <- getColors(TcgaDataBin$CLINIC$Project_TCGA, alpha=1)
+colorsStudy <- getColors(TcgaDataBin$CLINIC$Project_TCGA, alpha=1, filename="colors_cancer_type.csv")
 
 X <- t(t(TcgaDataBin$EXP) - rowMeans(t(TcgaDataBin$EXP)))
 resSVD <- svd(X, nu=2, nv=2)

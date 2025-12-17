@@ -83,7 +83,7 @@ to load these functions into your R environment.
 getColors <- function(vec, pal="Dark2", alpha=0.7){
   colors <- list()
 
-  palette_predefined <- read.csv("../data/colors.csv")
+  palette_predefined <- read.csv("../data/colors_cancer_type.csv")
   palette_predefined <- setNames(palette_predefined$Color, palette_predefined$Name)
   palette_default <- brewer.pal(max(length(unique(vec)),3), pal)
   i <- 1
@@ -407,6 +407,18 @@ visualize_activities_oncoprint <- function(H, V, metadata,
 
 
 ## 2.2  Load mutation data
+
+
+We now download the data needed for the notebook
+
+```{r download data}
+DownloadFromGoogleDrive(
+  data_url="https://drive.google.com/drive/folders/1vfL_a9Bk4rkp0tmnA3aK-ZLsBwqY65W8?usp=drive_link",
+  output_dir = "../data",
+  files_to_sync = c("CancerGeneCensusCOSMIC_20240117.csv", "lihc_mut_exp.RDS", "X_train_metadata.csv.gz",
+                    "summary_activity_cancer_type.tsv", "colors_cancer_type.csv")
+)
+```
 
 **INCLASS WORK** Load the data for `LIHC` TCGA **pancancer atlas 2018 studies** by loading the
 `../data/lihc_mut_exp.RDS` object and load the list of CGC cancer genes.

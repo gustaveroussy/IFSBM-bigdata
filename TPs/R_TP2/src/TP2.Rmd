@@ -381,6 +381,7 @@ visualize_activities_oncoprint <- function(H, V, metadata,
     t() %>%
     as.data.frame() %>%
     rownames_to_column("Subject_Id") %>%
+    mutate(Subject_Id=substr(Subject_Id, 1, 12)) %>%
     inner_join(metadata, by = "Subject_Id") %>%
     mutate(Patient_Id = Subject_Id) # Ensure Patient_Id exists
 
@@ -416,7 +417,8 @@ DownloadFromGoogleDrive(
   data_url="https://drive.google.com/drive/folders/1vfL_a9Bk4rkp0tmnA3aK-ZLsBwqY65W8?usp=drive_link",
   output_dir = "../data",
   files_to_sync = c("CancerGeneCensusCOSMIC_20240117.csv", "lihc_mut_exp.RDS", "X_train_metadata.csv.gz",
-                    "summary_activity_cancer_type.tsv", "colors_cancer_type.csv")
+                    "summary_activity_cancer_type.tsv", "colors_cancer_type.csv", "colors_oncoplot.csv",
+                    "signatures_cosmic_sbs_96_v3.4_grch38.tsv", "aetiologies_and_colors_cosmic_sbs_96_v3.4.tsv")
 )
 ```
 
@@ -532,11 +534,11 @@ min_freq <- 0.05
 n_tumors <- length(unique(TcgaData$MUT$patientId))
 n_tumors_min <- ceiling(min_freq * n_tumors)
 genes_list <- df_maf %>%
-  filter(Hugo_Symbol != "Unknown") %>%
+  dplyr::filter(Hugo_Symbol != "Unknown") %>%
   distinct(Tumor_Sample_Barcode, Hugo_Symbol) %>%
   group_by(Hugo_Symbol) %>%
   summarize(n_tumors=n()) %>%
-  filter(n_tumors >= n_tumors_min) %>%
+  dplyr::filter(n_tumors >= n_tumors_min) %>%
   pull(Hugo_Symbol)
 
 # get the table of clinical data

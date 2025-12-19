@@ -2,7 +2,7 @@
 title: "TP I IFSBM UE 11: Cancer and genomics"
 subtitle: "Supervised classification tasks."
 author:
-  - Yoann Pradat, PhDc yoann.pradat@gustaveroussy.fr
+  - Yoann Pradat, PhD yoann.pradat@gustaveroussy.fr
   - Julien Vibert, MD, PhD Julien.vibert@gustaveroussy.fr
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 bibliography: references.bib
@@ -626,16 +626,16 @@ patients with `r cancer_type_1`. We will compare two models: Regularized Logisti
 **INCLASS WORK**: Create a binary variable `Survival_Label`.
 
 - Poor: `OS_Time < 365` AND `OS == 1` (Dead).
-- Good: `OS_Time < 365*5` (Alive or Dead after 5 years).
+- Good: `OS_Time > 365*5` (Alive or Dead after 5 years).
 
 Drop intermediate/censored patients.
 
 
 ```{r create survival_label, eval=student_mode}
 # Filter for cancer type
-clinic_sub <- TcgaData$CLINIC[TcgaData$CLINIC$Project_TCGA == cancer_type_1, ]
+clinic_sub <- TcgaDataBin$CLINIC[TcgaDataBin$CLINIC$Project_TCGA == cancer_type_1, ]
 # Ensure expression data matches the subset rows
-exp_sub <- TcgaData$EXP[rownames(clinic_sub), ]
+exp_sub <- TcgaDataBin$EXP[rownames(clinic_sub), ]
 
 # Create Survival Labels
 clinic_sub$Survival_Label <- # YOUR WORK HERE
@@ -669,7 +669,7 @@ you deployed this in a hospital, what happens for a patient who lives 2 years?
 
 - Split into Train/Test.
 
-- Train Standard Logistic Regression (cv.glmnet, alpha=0, lambda=0).
+- Train Standard Logistic Regression (glmnet, alpha=0, lambda=0).
 
 - Train Lasso Logistic Regression (cv.glmnet, alpha=1).
 
